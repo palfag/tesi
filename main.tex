@@ -1,0 +1,67 @@
+\documentclass{report}
+\usepackage[english,italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref} % i riferimenti diventano cliccabili
+\usepackage{graphicx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{dblfloatfix}
+\usepackage{longtable}
+\usepackage{pdfpages}
+\usepackage{enumitem}
+
+\graphicspath{{images/}}
+
+
+\title{Data Loss Prevention:\\ Sistema di classificazione in grado di identificare documenti che contengono dati sensibili evitandone la diffusione e la perdita}
+\author{Paolo Fagioli}
+
+
+\begin{document}
+
+    % Frontespizio tesi
+    \includepdf{Frontespizio.pdf}
+
+    \input{preamble/copyright.tex}
+    
+    % Ringraziamenti
+    \input{preamble/acknoledgment}
+
+    %Dichiarazione
+    \input{preamble/declaration}
+
+    % Abstract
+    \selectlanguage{english}
+    \begin{abstract}
+        \input{preamble/abstract}
+    \end{abstract}
+
+    \selectlanguage{italian}
+
+    % Indice
+    \tableofcontents
+    %\thispagestyle{empty}
+
+    % Capitoli
+    %\input{chapters/chapter01}
+
+    %\input{chapters/chapter02}
+
+    %\input{chapters/chapter03}
+
+    %\input{chapters/chapter04}
+
+    %\input{chapters/chapter05}
+
+    %\input{chapters/chapter06}
+
+    % Bibliografia con BibTeX
+    \cite{Nahuel19} % Solo quando un riferimento viene citato viene incluso nella Bibliografia
+    \bibliographystyle{plain}
+    \bibliography{bibliography/biblio}
+
+\end{document}
+
+
+
+

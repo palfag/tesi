@@ -1,0 +1,26 @@
+\selectlanguage{italian}
+
+Questo lavoro è frutto della mia esperienza di tirocinio compiuta presso l’azienda \textsc{Certimeter Group}. Il mio stage si è incentrato su tematiche inerenti al mondo della sicurezza informatica, in particolare sulla gestione della prevenzione in materia di perdita dei dati (Data Loss Prevention).
+
+Per Data Loss Prevention s’intendono sistemi e tecniche che permettono di prevenire delle perdite di dati e la loro diffusione. Esistono diversi tipi di sistemi che si focalizzano sulla protezione dei dati in momenti di vita diversi. 
+Ho avuto modo di conoscere tecniche per la protezione dei cosiddetti dati a riposo, dei dati in movimento e dei dati in uso. 
+
+Il tirocinio mi ha portato a confrontare i principali prodotti presenti sul mercato per capire quali sono le caratteristiche fondamentali che contraddistinguono una soluzione DLP.
+
+Il mio progetto consiste nell’implementazione di una soluzione DLP per la protezione di uno di questi tipi di dati. Personalmente, ho deciso di implementare un sistema per la protezione dei dati in movimento.
+
+La soluzione DLP implementata permette di monitorare il traffico email, ispezionando il contenuto di ciascuna, in modo da identificare quelle che contengono dati sensibili così da prevenirne la perdita ed evitarne la diffusione.
+
+La scelta di implementare questa funzionalità è dovuta al fatto che le email sono, uno dei metodi di comunicazione più utilizzati e conosciuti da tutti, e in modo particolare, il principale metodo di comunicazione in ambito aziendale.
+
+L’implementazione comporta l’utilizzo di un relay Mail Server, Postfix, configurato in modo tale da ispezionare il contenuto delle email e di compiere delle azioni, quali, il blocco della consegna, o la quarantena, del messaggio, in caso dovesse rilevare la presenza di dati sensibili.
+
+La soluzione implementata ha l’obiettivo di incrementare i livelli di sicurezza in ambito aziendale, per questo motivo andrà ad interfacciarsi con il client di posta elettronica standard utilizzato in azienda, Microsoft Outlook, e il server di posta elettronica aziendale Aruba.
+
+
+
+
+\begin{figure}[b]
+    \centering
+    \includegraphics[scale=0.07]{logo_certimeter.png}
+\end{figure}
