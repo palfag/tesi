@@ -1,1 +1,275 @@
 \chapter{Analisi e Disegno}
+
+
+Questo capitolo ha come obiettivo quello di descrivere tutte le funzionalità che deve soddisfare la 
+soluzione DLP e gli eventuali vincoli a cui deve attenersi.
+
+\section{Soluzione DLP per il traffico email}
+Tenuto conto del modello ISACA,
+
+La soluzione DLP da implementare consisterà nella protezione dei data-in-motion, più nello specifico
+andrà a focalizzarsi sulla protezione delle email. La soluzione andrà a monitorare il traffico email e
+il loro contenuto in modo da:
+
+\begin{enumerate}
+    \item {identificare la presenza di dati sensibili al loro interno;}
+    \item {prevenire la loro perdita / 
+    invio (in modo da prevenire la fuoriuscita dall’ambiente aziendali di queste informazioni).}
+\end{enumerate}
+
+\section{Motivazione scelta e obiettivo}
+La scelta di implementare questa funzionalità è dovuta al fatto che le email sono uno, 
+se non il principale, dei metodi di comunicazione in ambito aziendale.
+L’implementazione di questa funzionalità, oltre ad essere utile, risulta anche interessante.
+
+Lo scopo principale è quello di incrementare la sicurezza enterprise, quindi in contesto aziendale, 
+evitando la diffusione di dati sensibili.
+
+\pagebreak
+\section{Glossario}
+
+\begin{table}[!b]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Termine} &
+      \textbf{Definizione} \\ \hline 
+    Dipendente &
+      \begin{tabular}[c]{@{}l@{}}Membro del personale. \\ Può essere il mittente o \\ il destinatario di una email.\end{tabular} \\ \hline 
+    Mittente &
+      \begin{tabular}[c]{@{}l@{}}Colui che invia la email.\\ Per questo progetto il mittente \\ è inteso come un dipendente \\ interno all’azienda.\end{tabular} \\ \hline
+    Destinatario &
+      \begin{tabular}[c]{@{}l@{}}Colui che riceve la email.\\ Può essere sia interno che \\ esterno all’azienda.\end{tabular} \\ \hline
+    Email &
+      \begin{tabular}[c]{@{}l@{}}Oggetto che va monitorato e \\ ispezionato dalla soluzione DLP.\\ In generale una email contiene:\\ -  Mittente;\\ -  Destinatario;\\ -  Oggetto;\\ -  Corpo;\\ -  Allegato (opzionale).\\ \\ I primi due attributi possono \\ essere oggetto di analisi del contesto, \\ mentre gli ultimi tre verranno ispezionati \\ durante l’analisi del contenuto.\end{tabular} \\ \hline
+    Dati sensibili &
+      \begin{tabular}[c]{@{}l@{}}Dati che hanno maggior valore, ad esempio:\\ - dati di business\\  (contratti, proprietà intellettuale, progetti);\\  \\ - dati personali \\ (Codici fiscali, date di nascita \\ e altre informazioni sui dipendenti \\ e/o clienti);\\ \\ - dati finanziari \\ (dati della carta di credito o di altre modalità di pagamento);\\ eccetera.\end{tabular} \\ \hline
+    \end{tabular}%
+    }
+    \caption{Glossario dei termini}\label{Glossario}
+    \end{table}
+
+    \pagebreak
+    \section{Analisi dei requisiti}
+
+    \subsection*{Obiettivo utente:}
+    La soluzione DLP deve identificare la presenza di dati/documenti sensibili all’interno delle email 
+    in modo da evitare che lascino il sistema aziendale.
+
+    \subsection*{Requisiti funzionali:}
+
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{l}{requisito funzionale 1 (RF01): \textbf{Monitoraggio traffico SMTP}}                               \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF01}           \\ \hline
+    \multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Monitoraggio traffico email (SMTP)}     \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}La soluzione deve monitorare il traffico email} \\ \hline
+    \multicolumn{1}{|l|}{Motivazione} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Senza l'implementazione di questo requisito,\\ la soluzione non può funzionare. È il requisito\\ base per poter implementare gli altri\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Indispensabile} \\ \hline
+    \multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{/}                                      \\ \hline
+    \end{tabular}%
+    }
+    \newline
+    \vspace*{1 cm}
+    \newline
+\end{table}
+
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{l}{requisito funzionale 2 (RF02): \textbf{Analisi del contenuto}}                                    \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF02}           \\ \hline
+    \multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Analisi del contenuto}                  \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}La soluzione deve analizzare il contenuto di\\ ogni email che viene inviata.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Motivazione} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Senza l'implementazione di questo requisito,\\ La soluzione non sarebbe in grado di\\ \\ identificare contenuti sensibili\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Indispensabile} \\ \hline
+    \multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{RF01}                                   \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{l}{requisito funzionale 3 (RF03): \textbf{Analisi del contesto}}                                                   \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF03}                         \\ \hline
+    \multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Analisi del contesto}                                 \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}La soluzione, oltre ad analizzare il contenuto\\ di una email, deve anche tenere conto del \\ contesto\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Motivazione} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Effettuare l'analisi del contesto può essere un\\ utile supporto all'analisi del contenuto.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Non Indispensabile, ma utile} \\ \hline
+    \multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{RF01}                                                 \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{l}{requisito funzionale 4 (RF04): \textbf{Identificazione dati sensibili}}                   \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF04}           \\ \hline
+    \multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Identificazione di contenuti sensibili} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}La soluzione dev'essere in grado di identificare eventuali\\ dati/contenuti sensibili presenti all'interno delle email\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Motivazione} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Senza l'implementazione di questo requisito non è \\ possibile raggiungere l'obiettivo utente\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Indispensabile} \\ \hline
+    \multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{RF01, RF02}                             \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{l}{requisito funzionale 5 (RF05): \textbf{Azioni di risposta}}                         \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF05}           \\ \hline
+    \multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Intraprendere azioni di risposta}       \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}La soluzione deve poter intraprendere una varietà di azioni:\\ 1. consentire l’invio;\\ 2. bloccare l’invio;\\ 3. eliminare il contenuto sensibile e procedere con l’invio.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Motivazione} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Poiché la soluzione deve evitare che documenti sensibili \\ lascino il sistema aziendale, l'implementazione di questo \\ requisito è fondamentale\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Indispensabile} \\ \hline
+    \multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{RF01, RF04}                             \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ll}
+\multicolumn{2}{l}{requisito funzionale 6 (RF06): \textbf{Avviso in caso di blocco}}                                 \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}RF06}           \\ \hline
+\multicolumn{1}{|l|}{Nome}                             & \multicolumn{1}{l|}{Avviso in caso di blocco}               \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Definizione} &
+  \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}La soluzione deve sempre avvisare il dipendente, e \\ l'analista DLP in caso decida di bloccare l'invio della \\ email\end{tabular}} \\ \hline
+\multicolumn{1}{|l|}{Motivazione} &
+  \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Utile avvisare il dipendente (e l'analista DLP) in caso\\ sia necessario bloccare l'invio della sua email\end{tabular}} \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Priorità} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}Indispensabile} \\ \hline
+\multicolumn{1}{|l|}{Dipendenze}                       & \multicolumn{1}{l|}{RF05}                                   \\ \hline
+\end{tabular}%
+}
+\newline
+\vspace*{1 cm}
+\newline
+\end{table}
+
+\pagebreak
+\section{Dipendenze tra requisiti}
+Di seguito ho stilato un elenco delle dipendenze formatesi tra i requisiti.
+La nomenclatura utilizzata è la seguente:
+\begin{flushleft}
+  x -> y: il requisito x dipende dal requisito y
+  \newline
+  \newline
+  RF02 -> RF01
+
+  RF03 -> RF01
+
+  RF04 -> RF01, RF02
+
+  RF05 -> RF01, RF04
+
+  RF06 -> RF05
+  \newline
+  \newline
+  Elenco delle dipendenze semplificato: 
+  \newline
+  \newline
+  RF02 -> RF01
+
+  RF03 -> RF01
+
+  RF04 -> RF02
+
+  RF05 -> RF04 
+  
+  RF06 -> RF05
+\end{flushleft}
+
+\newpage
+\section{Grafo delle Dipendenze}
+Le dipendenze tra i requisiti formano un grafo aciclico che bisogna tenere in considerazione in caso si debba modificare uno dei requisiti del sistema.
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=.4\textwidth, height=.3\textheight, keepaspectratio]{grafo.jpg}
+  \caption{Grafo aciclico delle dipendenze}\label{grafoDipendenze}
+\end{figure}
+
+\section{Disegno dell'architettura}
+
+Per la progettazione della soluzione inseriremo la nostra soluzione DLP
+tra il mail client (Outlook) e il mail server aziendale (Aruba). La soluzione DLP deciderà se lasciar 
+passare l' email verso il mail server aziendale, oppure bloccarne l'invio.
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=12cm, height=16cm, keepaspectratio]{disegno1.png}
+  \caption{disegno architettura per un mail client}\label{disegno1}
+\end{figure}
+
+\pagebreak
+La soluzione DLP verrà implementata attraverso l'uso di un mail server di inoltro (relay mail server).
+Il disegno subirà una piccola modifica.
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=12cm, height=16cm, keepaspectratio]{disegno2.png}
+  \caption{soluzione DLP attraverso mail server di relay}\label{disegno2}
+\end{figure}
+
+Come ultimo passo andremo a considerare una sottorete composta dagli host dei dipendenti dell'azienda, al
+posto di un unico client. Questa è la configurazione che più rispecchia la realtà.
+
+\begin{figure}[htp]
+  \centering
+  \includegraphics[width=12cm, height=16cm, keepaspectratio]{disegno3.png}
+  \caption{soluzione DLP attraverso mail server di relay}\label{disegno3}
+\end{figure}
+
+\subsection{Descrizione del flusso di dati e di controllo}
+Come mostrato dalla figure \ref{disegno2} e \ref{disegno3}, Quando un dipendente invia una email, questa
+passerà dal relay mail server che deciderà se bloccarla, oppure inoltrarla al mail server aziendale. L'email
+continuerà il suo cammino fino ad arrivare al mail server del destinatario. A quel punto potrà essere scaricata
+dal mail client del destinatario.

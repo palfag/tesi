@@ -1,8 +1,109 @@
 \chapter{Individuazione tecnologica per il progetto}
 
 \section{Confronto vendors}
+Nel mercato sono presenti diversi tipi di soluzioni DLP. Ogni vendor propone il suo prodotto che fa 
+concorrenza agli altri. Attraverso un'analisi di mercato sarà più semplice capire quali sono le funzionalità
+fondamentali che contraddistinguono una soluzione DLP.
+
+La seguente lista elenca alcuni dei principali prodotti presenti sul mercato:
+
+\begin{itemize}
+    \item Endpoint Protector by \textbf{CoSoSys}
+    \item \textbf{Digital Guardian} Endpoint DLP
+    \item \textbf{Symantec} Data Loss Prevention
+    \item \textbf{Comodo} MyDLP
+    \item \textbf{Forcepoint} Data Loss Prevention
+    \item \textbf{SecureTrust} Data Loss Prevention
+    \item \textbf{McAfee} Total Protection for Data Loss Prevention
+    \item \textbf{Check Point} Data Loss Prevention
+    \item \textbf{Safetica} Data Loss Prevention
+  \end{itemize}
+
+  Per lo studio di mercato prenderemo in causa i primi cinque della lista. 
+  La tabella \ref{tabellaVendor} mostra similitudini e differenze delle caratteristiche possedute dai 
+  principali prodotti DLP sul mercato.
+
+  \begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+     &
+      \textbf{\begin{tabular}[c]{@{}c@{}}Endpoint \\ Protector\end{tabular}} &
+      \textbf{\begin{tabular}[c]{@{}c@{}}Digital\\ Guardian\end{tabular}} &
+      \textbf{Symantec} &
+      \textbf{MyDLP} &
+      \textbf{Forcepoint} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    {\color[HTML]{333333} \textbf{\begin{tabular}[c]{@{}l@{}}Dati in Transito\\ Network\end{tabular}}} &
+      {\color[HTML]{333333} } &
+      {\color[HTML]{333333} } &
+      {\color[HTML]{333333} } &
+      {\color[HTML]{333333} } &
+      {\color[HTML]{333333} } \\ \hline
+    Traffico Web                                                                                                 & x & x & x & x & x \\ \hline
+    Traffico Email                                                                                               & x & x & x & x & x \\ \hline
+    Traffico IM                                                                                                  & x &   & x & x & x \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{\begin{tabular}[c]{@{}l@{}}Dati in Uso\\ Endpoint\end{tabular}}                                      &   &   &   &   &   \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Controllo Device\\ (USB, HDD, \\ SSD,CD/DVD, \\ fax, stampanti)\end{tabular}      & x & x & x & x & x \\ \hline
+    Screenshots                                                                                                  & x & x & x & x & x \\ \hline
+    Clipboard                                                                                                    & x & x & x & x & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Controllo \\ applicazioni\end{tabular}                                            &   & x & x &   & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Supporto ai \\ dispositivi mobili\\ (telefoni, tablet)\end{tabular}               &   & x & x &   & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Supporti di \\ virtualizzazione\\ (Virtualbox, VMware)\end{tabular}               & x & x & x &   & x \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{\begin{tabular}[c]{@{}l@{}}Dati a riposo\\ Discovery\end{tabular}}                                   &   &   &   &   &   \\ \hline
+    Endpoint discovery                                                                                           & x & x & x & x & x \\ \hline
+    Database discovery                                                                                           &   &   & x & x & x \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{\begin{tabular}[c]{@{}l@{}}Metodi di \\ Content detection\end{tabular}}                              &   &   &   &   &   \\ \hline
+    Espressioni regolari                                                                                         & x & x & x & x & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}OCR\\ Optical character\\ recognition\end{tabular}                                & x &   & x &   & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}PDM\\ partial document matching\end{tabular}                                      &   & x & x & x & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}EDM\\ exact document matching\\ (fingerprinting di dati strutturati)\end{tabular} & x & x & x & x & x \\ \hline
+    Parole chiave - Dizionario                                                                                   & x & x & x & x & x \\ \hline
+    Analisi del contesto                                                                                         &   & x & x &   & x \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Fingerprinting \\ di dati non strutturati\end{tabular}                            & x & x & x & x & x \\ \hline
+    \textbf{Gestione gerarchica delle policy}                                                                    & x &   & x &   & x \\ \hline
+    \textbf{Open Source}                                                                                         &   &   &   &   &   \\ \hline
+    \end{tabular}%
+    }
+    \caption{Confronto prodotti DLP}\label{tabellaVendor}
+    \end{table}
+
+
+    \section{Soluzioni open source}
+    Come si evince nella tabella \ref*{tabellaVendor} si può facilmente notare che nessuno dei 
+    prodotti è open source. Perché? Nel mercato non si trovano tecnologie DLP gratuite valide da
+    poter tenere testa a quelle proprietarie. La maggior parte dei prodotti DLP sono a pagamento e 
+    sono accompagnati da una demo in modo da poter essere testati.
+
+    \textit{OpenDLP} è un prodotto DLP open source, disponibile per sistemi Windows e Unix. Purtroppo
+    non è più mantenuto, infatti l'ultimo aggiornamento è datato 2012. Vale la pena citarlo perché non 
+    vi sono altre soluzioni DLP gratuite. OpenDLP può essere scaricato al sito: 
+    \url{https://code.google.com/archive/p/opendlp/}.
+    
+    Un altro prodotto degno di nota è \textit{MyDLP}. Nato come software open source,
+    ma dopo l'acquisizione da parte di Comodo nel 2014, la versione aperta presente su github
+    \url{https://github.com/mydlp} non è stata più aggiornata.
+
+    \begin{figure}
+        \centering
+        \fbox{\includegraphics[width=.8\textwidth, height=.6\textheight, keepaspectratio]{data loss vectors.jpeg}}
+        \caption{Modello ISACA: Data Loss Vectors}\label{ModelloIsaca}
+      \end{figure}
+
+\section{Accenni sul progetto}
+Il progetto implementato consiste in una soluzione DLP per la protezione dei dati in transito, più precisamente per
+l'identificazione di eventuali contenuti sensibili presenti nelle email aziendali, in modo da prevenirne la perdita
+ed evitarne la diffusione.
+
+Il confronto effettuato tra i prodotti principali presenti sul mercato, anche se nessuno di essi è stato utilizzato 
+ai fini del progetto, è stato utile per capire quali caratteristiche deve possedere la soluzione DLP implementata.
 
 \section{Tecnologie utilizzate}
+Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     \subsection{Linux}
     \subsection{Postfix}
     \subsection{Python}

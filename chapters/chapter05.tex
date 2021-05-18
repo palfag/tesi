@@ -1,1 +1,172 @@
 \chapter{Postfix}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=4cm, height=8cm, keepaspectratio]{logo_postfix.png}
+        \caption{logo di Postfix}\label{logoPostfix}
+  \end{figure}
+  
+  Come accennato nel capitolo precedente, la soluzione DLP verrà implementata attraverso l'utilizzo di un 
+  mail server configurato in modalità di inoltro.
+  Mi sono soffermato principalmente sulla scelta tra Sendmail e Postfix. 
+  Sendmail è stato l'MTA più diffuso tra i sistemi UNIX, ma ormai sono stati riscontrati problemi in materia
+  di sicurezza. 
+  Per questo motivo ho deciso di utilizzare Postfix, un software nato con l'obiettivo di sostituire Sendmail. Il passaggio
+  tra i due è piuttosto semplice dato che Postfix è stato progettato in modo da essere compatibile con il 
+  suo predecessore.
+  A differenza dei prodotti DLP trattati nel capitolo 2, sia Sendmail che Postfix sono software open source e
+  quindi rappresentano un'ottima soluzione per lo sviluppo di questo progetto.
+  Nel prossimo paragrafo tratteremo un'introduzione su cos'è Postfix e sulla sua architettura. Per ulteriori
+  informazioni è possibile consultare il sito ufficiale al seguente indirizzo: \url{http://www.postfix.org/}
+   
+  \pagebreak
+  \section{Introduzione di Postfix}
+  Postfix è un MTA (mail server) che trasporta messaggi di posta elettronica da un MUA (mail client) verso un server remoto o in locale. Per lo sviluppo della soluzione DLP utilizzeremo come MUA ufficiale Outlook, poiché è il mail client utilizzato in azienda e configureremo Postifix come mail server di inoltro, in modo che inoltri le email verso il server di posta elettronica aziendale Aruba. Una delle funzionalità particolarmente interessanti che offre Postfix è quella di effettuare un’analisi sul contenuto delle email (vedremo nei capitoli 5 e 6 come configurare il controllo dei contenuti e come sviluppare dei filtri).
+  
+  Il vantaggio principale che ha portato Postfix a diventare l’erede di Sendmail, oltre la compatibilità, è la sicurezza. Postfix è stato progettato in modo da essere dotato di un’architettura modulare. È composto da diversi demoni, ognuno dei quali svolge un preciso compito ed esegue con i privilegi minimi necessari per portarlo a termine. Il  master è l’unico processo che esegue con i privilegi di root e rimane sempre attivo. La funzione principale del master è quella di gestire tutti gli altri processi. I processi non hanno nessuna relazione di parentela con i processi utente quindi sono immuni da vulnerabilità che coinvolgono la relazione padre-figlio. Per questo motivo Postfix non è vulnerabile da attacchi che sfruttano l’interprocess communication, come ad esempio l’invio di segnali o l’utilizzo della memoria condivisa. Postfix è immune anche da attacchi di tipo Buffer Overflow. In caso di mancanza di risorse è progettato per rallentare i suoi compiti, si fa da parte in modo che il sistema si possa riprendere, rendendo meno efficienti gli attacchi DOS nei suoi confronti.
+  
+  La ricezione dei messaggi può avvenire in due modi: localmente, oppure tramite internet.
+  \subsection{Ricezione locale dei messaggi}
+  La ricezione locale di email può avvenire ad esempio quando si invia un messaggio da terminale (dallo stesso host che ospita il server Postfix) utilizzando il programma sendmail. Più avanti mostreremo l’invio di un messaggio da terminale utilizzando il MUA mailx e discuteremo di una vulnerabilità (di Aruba) in cui mi sono imbattuto accidentalmente, che è possibile sfuttare per effettuare lo spoofing del mittente.
+  
+  I messaggi locali sono depositati nella cartella maildrop dal comando postdrop di Postfix. Postdrop non fa altro che creare un file all’interno della cartella maildrop copiandone all’interno l’input passato al comando (stdin, che corrisponde alla nostra email inviata localmente). 
+  
+  Il demone pickup a questo punto preleva il messaggio dalla cartella (coda) maildrop e lo invia al demone cleanup. Questo è il demone incaricato di effettuare i controlli sul contenuto che come già detto verranno esposti nel capitolo 6. Una volta che l’email ha superato i controlli, questa finirà nella coda dei messaggi in arrivo e cleanup avviserà il gestore delle code (qmgr). 
+  Nel nostro caso, poiché Postfix sarà configurato come relay mail server, qmgr contatterà smtp per inviare il messaggio al next-hop. In caso si dovesse consegnare il messaggio localmente verrebbe contattato local e nel caso lo si passasse ad un comando pipe.
+  
+  \subsection{Ricezione dei messaggi attraverso la rete}
+  I messaggi ricevuti dalla rete sono accettati dal demone smtpd. Una volta ricevuto il messaggio, smtpd provvederà a consegnarlo a cleanup e da quel momento la strada percorsa sarà la stessa di quella effettuata dalle email ricevute in locale.
+  Di base la nostra configurazione utilizza questa opzione considerando che il mail server si trova all'interno della rete aziendale e deve accettare email dagli host dei dipendenti connessi alla rete.
+  
+  \subsection{Rifiuto di un messaggio}
+  Se postfix dovesse decidere di rifiutare il messaggio, ad esempio perché vengono identificati dati sensibili, il demone bounce provvederà ad avvisare il mittente includendo opzionalmente una motivazione del perché non è stato possibile accettare e quindi consegnare il messaggio.
+  
+  \section{Utilizzo di Postfix come soluzione DLP}
+  In questo paragrafo citeremo in causa i requisiti scoperti durante la fase di analisi e vedremo come
+  possono essere soddisfatti attraverso l'utilizzo di Postfix. In particolare la tabella
+  \ref{PostfixDLP} stila un elenco dei requisiti nella colonna di sinistra, mentre alla destra di ognuno viene illustrato
+  cosa offre Postfix per poterlo soddisfare.
+  
+   
+  
+  
+  
+  
+  \begin{table}[htp]
+      \centering
+      \resizebox{\textwidth}{!}{%
+      \begin{tabular}{|l|l|}
+      \hline
+      \rowcolor[HTML]{EFEFEF} 
+      \textbf{1. Monitoraggio traffico email} &
+        \begin{tabular}[c]{@{}l@{}}Poiché si utilizza un mail server di relay,\\ questo requisito risulta soddisfatto.\end{tabular} \\ \hline
+      \textbf{2. Analisi del contenuto} &
+        \begin{tabular}[c]{@{}l@{}}Postfix permette di analizzare:\\ - l'oggetto del messaggio;\\ - il corpo del messaggio;\\ - l'allegato di un messaggio;\\ \\ l'analisi avviene mediante l'utilizzo di \\ espressioni regolari.\\ Postfix non offre la possibilità di \\ analizzare il contenuto di un allegato, ma \\ permette di applicare delle regole per \\ filtrare in base al nome del file e al tipo.\end{tabular} \\ \hline
+      \rowcolor[HTML]{EFEFEF} 
+      \textbf{3. Analisi del contesto} &
+        \begin{tabular}[c]{@{}l@{}}È possibile effettuare un'analisi degli\\ header del messaggio. Sarà possibile\\ effettuare delle restrizioni in base al\\ mittente e destinatario o in base ad un \\ dominio.\\ \\ alcuni header d'interesse: \\ - FROM:\\ - TO:\end{tabular} \\ \hline
+      \textbf{\begin{tabular}[c]{@{}l@{}}4. Identificazione di contenuti\\     sensibili\end{tabular}} &
+        \begin{tabular}[c]{@{}l@{}}L'identificazione di contenuti sensibili\\ sarà possibile per mezzo dell'analisi del \\ contenuto.\end{tabular} \\ \hline
+      \rowcolor[HTML]{EFEFEF} 
+      \textbf{5. Intraprendere azioni di risposta} &
+        \begin{tabular}[c]{@{}l@{}}Azioni di risposta offerte da Postfix:\\ 1. REJECT;\\ 2. IGNORE;\\ 3. WARN;\\ 4. HOLD;\\ 5. DISCARD;\\ 6. FILTER;\\ 7. REDIRECT.\\ \\ Nel prossimo paragrafo verrà spiegato il \\ funzionamento di ogni voce citata.\end{tabular} \\ \hline
+      \textbf{6. Avviso in caso di blocco} &
+        \begin{tabular}[c]{@{}l@{}}Nel caso in cui un messaggio di posta \\ non dovesse essere accettato da Postfix\\ (per mezzo della clausola REJECT), \\ verrà notificato il MUA del mittente.\end{tabular} \\ \hline
+      \end{tabular}%
+      }
+      \caption{Utilizzo di Postfix come soluzione DLP}\label{PostfixDLP}
+      \end{table}
+  
+  
+  
+  \begin{table}[htp]
+    \subsection{Azioni di risposta di Postfix}
+  \begin{enumerate}[label=\textbf{\arabic*})]
+      \item{\textbf{REJECT [testo opzionale]:}}\\
+      Nel caso in cui venga definita la clausola REJECT, Postfix non accetterà il messaggio 
+      da consegnare (ne blocca l'invio), inviato dal MUA del destinatario.
+      [testo opzionale] verrà consegnato al client che ha cercato di inviare il messaggio.
+      L'evento verrà tracciato nei log (insieme al motivo [testo opzionale]).
+  
+      \item{\textbf{IGNORE:}}\\
+      Se definita la clausola IGNORE, Postfix rimuove le righe del messaggio che fanno match con 
+      le espressioni regolari definite. Elimina i dati sensibili e poi procede con l'inoltro del 
+      messaggio.
+      
+      \item{\textbf{WARN [testo opzionale]:}}\\
+      Definendo una regola con la parola chiave WARN, il mittente sarà in grado di inviare il messaggio di 
+      posta. Nei log verrà generato un warning contenente [testo opzionale].
+      
+      \item{\textbf{HOLD [testo opzionale]: (Quarantena del messaggio)}}\\
+      L'opzione HOLD mantiene il messaggio nella hold queue di Postfix in quarantena. Questa funzionalità
+      è utilizzata quando è necessario l'intervento umano. Il compito di decidere le sorti del messaggio,
+      ricadrà nell'analista DLP, o postmaster se vogliamo utilizzare la terminologia di Postfix. A questo punto
+      il messaggio potrà essere sbloccato, oppure eliminato.
+      Nei log viene tracciata la riga che ha fatto match con la regola definita e se specificato sarà aggiunto
+      anche [testo opzionale].
+      
+      
+      \item{\textbf{DISCARD [testo opzionale]:}}\\
+      Postfix offre anche l'opzione DISCARD che quando specificata avvisa al MUA del destinatario che il 
+      messaggio di posta è stato consegnato correttamente. Invece di trasportarlo verso la destinazione finale
+      come detto al mittente, Postfix silenziosamente lo elimina.
+      Se definito [testo opzionale] viene tracciato nei log insieme alla riga che ha fatto match con la regola 
+      specificata. 
+      
+      \item{\textbf{FILTER [testo opzionale]:}}
+      Questa opzione invia il messaggio ad un filtro esterno. Molto utilizzato per effettuare scansioni 
+      antivirus e antispam.
+      
+      \item{\textbf{REDIRECT user@dominio.it:}} 
+      L'ultima opzione è quella di REDIRECT e, come si può intuire dalla parola, instrada il messaggio al 
+      destinatario specificato, anziché inviarlo a quello originale.
+  \end{enumerate}
+  \end{table}
+  
+  \pagebreak
+  \begin{table}[htp]
+    \subsection{Gestione dei messaggi in quarantena}
+    Il demone incaricato di gestire le code è qmgr. qmgr getisce cinque code:
+    \begin{itemize}
+      \item incoming
+      \item active
+      \item deferred
+      \item hold
+      \item corrupt
+    \end{itemize}
+  \end{table}
+  
+  Tutti i messaggi in ingresso e in uscita passano attraverso qmgr. Ai fini di questo progetto ci focalizzeremo
+  sulla coda di hold, quella dove si trovano i messaggi bloccati in quarantena.
+  
+  Postfix mette a disposizione dei comandi per permettere al postmaster, manualmente, di gestire i messaggi che si 
+  trovano coda.
+  
+  \subsubsection{Visualizzazione dei messaggi in coda}
+  Attraverso il comando postqueue -p o mailq (tenuto per compatibilità con Sendmail) è possibile visualizzare tutti
+  i messaggi in coda. È importante notare che i messaggi che si trovano nella hold queue presentano accanto al Queue ID 
+  un punto esclamativo.
+  
+  \begin{verbatim}
+    [root@localhost postfix]# mailq
+  -Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
+  9AD9A8D1ED5!   16856 Wed Apr 28 12:44:03  paolo.fagioli@certimeter.it
+                                           palfag33@gmail.com
+  \end{verbatim}
+  
+  \subsubsection{Ispezione di un messaggio in coda}
+  Per decidere se consentire l'invio o il blocco del messaggio, il postmaster dovrà  esaminarne il contenuto, 
+  quest'azione sarà possibile utilizzando il comando postcat -q Queue ID.
+  
+  
+  \subsubsection{Eliminazione messaggio dalla coda}
+  Per eliminare un messaggio dalla coda si utilizzerà il comando postsuper -d Queue ID per eliminare il messaggio con 
+  ID == Queue ID.
+  postsuper -d ALL elimina tutti i messaggi dalla coda.
+  
+  
+  \subsubsection{Consenso all'invio di un messaggio}
+  I messaggi che finiscono in quarantena, senza l'intervento umano, sono destinati a rimanere nella hold queue per una 
+  quantità di tempo indefinita. Se il postmaster decide di lasciar passare il messaggio dovrà utilizzare il comando
+  postsuper -H QueueID. In questo modo il messaggio con id == QueueID lascerà la coda di hold tornano sotto il controllo
+  del gestore delle code, che schedulerà la riconsegna verso la destinazione.
