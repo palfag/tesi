@@ -1,0 +1,39 @@
+\chapter{Introduzione}
+
+Nel settore aziendale si è rilevato, soprattutto nell’ultimo periodo causa pandemia da COVID-19, un aumento delle minacce e un incremento del pericolo di furto di identità o di informazioni rispettivamente a carico del singolo o delle aziende.
+
+Poiché è necessario contrastare questo tipo di minacce, oltre a prevedere i classici sistemi di protezione perimetrale come i firewall, è assolutamente necessario prevedere sistemi che impediscano alle informazioni di uscire dai sistemi aziendali: i cosiddetti sistemi di Data Loss Prevention (DLP).
+
+Benché i firewall siano le difese perimetrali più conosciute, in grado di filtrare in base a indirizzi ip sorgente e destinazione, porte, e sul tipo di protocollo utilizzato, non sono in grado di identificare eventuali dati sensibili.
+
+Questa tesi si concentra sullo sviluppo e l’implementazione, fino al collaudo e al Go Live di un sistema DLP in grado di identificare dati sensibili, all'interno delle email, così da prevenirne la perdita ed evitarne la diffusione.
+
+\section{Organizzazione}
+
+Il capitolo 1 introdurrà una breve introduzione della tematica della Data Loss Prevention.
+
+Nel capitolo 2 verrà effettuato un confronto tra i principali prodotti presenti sul mercato per capire 
+quali sono le caratteristiche fondamentali che contraddistinguono una soluzione DLP.
+
+
+All’interno del capitolo 3 sarà descritto, in breve, il tipo di soluzione implementata e verrà 
+effettuata l’analisi e il disegno del progetto.
+
+
+Il capitolo 4 presenterà in generale Postfix e come sarà utilizzato per soddisfare i requisiti 
+scoperti durante la fase di analisi.
+
+
+Nel capitolo 5 verrà effettuata l’installazione e configurazione di 
+Postfix in modo che si interfacci con il mail client utilizzato in azienda Outlook e che svolga 
+la funzione di mail server di inoltro verso il servizio di posta elettronica aziendale di Aruba. 
+Per garantire la sicurezza, il traffico viaggerà utilizzando canali di comunicazione sicuri/cifrati.
+
+
+Il capitolo 6 tratterà lo sviluppo di filtri interni per l’analisi del contenuto e del contesto attraverso 
+l’uso di parole chiave e di espressioni regolari.
+Sarà anche sviluppato uno script esterno in Python per l’analisi del contenuto degli allegati e successivamente 
+verrà integrato in Postfix. Succederà a questo una fase di testing.
+
+
+Infine un ultimo spazio è dedicato alle conclusioni e ai possibili sviluppi futuri.
