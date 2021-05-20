@@ -145,14 +145,14 @@ certificato e chiave poiché saranno necessari successivamente per la configuraz
     \caption{Configurazione di Postfix}\label{confPostfix}
   \end{figure}
 
-Innanzitutto sarà necessario installare i seguenti pacchetti:
+1. Innanzitutto sarà necessario installare i seguenti pacchetti:
 
 \begin{verbatim}
     yum install postfix mailx cyrus-sasl cyrus-sasl-plain
 \end{verbatim}
 
 
-Creare un file, nel mio caso che ho chiamato \textit{sasl\_passwd} dove andremo a mettere le credenziali
+2. Creare un file, nel mio caso che ho chiamato \textit{sasl\_passwd} dove andremo a mettere le credenziali
 necessarie per l'autenticazione presso il server Aruba:
 
 \begin{verbatim}
@@ -160,13 +160,13 @@ necessarie per l'autenticazione presso il server Aruba:
     [smtps.aruba.it]:465    paolo.fagioli@certimeter.it:pwd
 \end{verbatim}
 
-Processare il file contenente le credenziali:
+3. Processare il file contenente le credenziali:
 
 \begin{verbatim}
     postmap /etc/postfix/sasl_passwd
 \end{verbatim}
 
-Editare il file \textit{/etc/postfix/main.cf}:
+4. Editare il file \textit{/etc/postfix/main.cf}:
 
 \begin{verbatim}
     myhostname = mail.palfag.it
@@ -180,7 +180,7 @@ Editare il file \textit{/etc/postfix/main.cf}:
     readme_directory = no
 \end{verbatim}
 
-Sempre all'interno del file \textit{/etc/postfix/main.cf} inserire i parametri per la configurazione di TLS,
+5. Sempre all'interno del file \textit{/etc/postfix/main.cf} inserire i parametri per la configurazione di TLS,
 in questo momento saranno necessari i certificato e chiave generati precedentemente:
 
 \begin{verbatim}
@@ -199,19 +199,19 @@ in questo momento saranno necessari i certificato e chiave generati precedenteme
     smtp_sasl_security_options = noanonymous
 \end{verbatim}
 
-Avviare Postfix:
+6. Avviare Postfix:
 \begin{verbatim}
     systemctl start postfix.service
 \end{verbatim}
 
-A questo punto possiamo verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
+7. A questo punto possiamo verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
 provando ad inviare una email da terminale:
 
 \begin{verbatim}
     echo corpo | mail -s “Oggetto” -r emailMittente emailDestinatario 
 \end{verbatim}
 
-Una volta testato il funzionamento, sarà necessario configurare Postfix in modo che ascolti dalle porte 465 e 587 
+8. Una volta testato il funzionamento, sarà necessario configurare Postfix in modo che ascolti dalle porte 465 e 587 
 (la porta 25 è già configurata di default).
 
 Editare il file \textit{/etc/postfix/master.cf}. Attraverso la seguente configurazione Postfix ascolterà 
@@ -236,7 +236,7 @@ sulla porta 587 e sarà dotato di tutte le impostazioni necessarie per supportar
   -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
 \end{verbatim}
 
-Un procedimento simile per fare in modo che ascolti anche dalla porta 465:
+9. Un procedimento simile per fare in modo che ascolti anche dalla porta 465:
 
 \begin{verbatim}
     smtps     inet  n       -       n       -       -       smtpd
@@ -257,14 +257,324 @@ Un procedimento simile per fare in modo che ascolti anche dalla porta 465:
     -o smtpd_tls_auth_only=yes
 \end{verbatim}
 
-Avviare sasl\_authd
+10. Avviare sasl\_authd
 \begin{verbatim}
-    systemctl start sasl\_authd.services
+    systemctl start sasl_authd.services
 \end{verbatim}
 
-Riavviare Postfix
+11. Riavviare Postfix
 \begin{verbatim}
     systemctl restart postfix.service
 \end{verbatim}
 
 Da questo momento Postfix è pronto per svolgere il suo lavoro.
+
+\pagebreak
+\section{Configurazione mail client MS Outlook}
+Il client di posta elettronica standard utilizzato in azienda è Microsoft Outlook, 
+per questo motivo la configurazione avverrà con quest'ultimo, 
+ma ovviamente il procedimento è analogo utilizzando client mail diversi come ad esempio Thunderbird.
+Per configurare il client di posta MS Outlook è necessario avviare il software.
+A questo punto andare su ``File'' e fare click su ``Aggiungi account''.
+
+Nella finestra proposta inserire il proprio indirizzo di posta aziendale e selezionare ``Consenti la configurazione
+manuale dell'account'' e poi fare click su ``Connetti'', come è possibile vedere in figura.
+
+** inserire figura ** 
+
+Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come mostrato nella tabella seguente:
+
+
+\begin{table}[htp]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Posta in arrivo} & imaps.aruba.it & 993  \\ \hline
+    \textbf{Posta in uscita} & mail.palfag.it & 5555 \\ \hline
+    \end{tabular}%
+    \end{table}
+
+    Ricordiamo che la porta 5555 inserita è una porta effimera che successivamente verrà tradotta nella porta 587
+    dal NAT di VirtualBox.
+    Selezionare la spunta ``Usa SSL per connetterti''
+
+    ** inserire figura ** 
+
+    Naturalmente poiché il dominio mail.palfag.it non è registrato, 
+    nessun server DNS sarebbe in grado di compiere la traduzione in 192.168.8.150, 
+    quindi sarà necessario inserire un record manualmente all’interno del file /private/etc/hosts 
+    come mostrato in foto:
+
+    ** inserire figura ** 
+
+    In realtà in azienda ci sarebbe un server DNS con il compito di tradurre il dominio in indirizzo IP, 
+    e non ci sarebbe bisogno di modificare il file /private/etc/hosts per ogni macchina che deve usare il servizio.
+
+
+    A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
+    Ci dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
+    Sarà necessario dire al nostro computer di fidarsi sempre del certificato.
+    (Anche in questo caso nella realtà aziendale non ci sarebbe bisogno di effettuare questo passaggio, poiché 
+    il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
+
+    ** inserire figura ** 
+
+    Una volta fatto questo, sarà possibile inviare le email da Outlook.
+
+
+    \section{Architettura finale}
+    Una volta effettuate tutte le configurazioni necessarie, sarà possibile migliorare il disegno dell’architettura. 
+    Questo disegno rappresenta una versione più realistica del modello reale, rispetto alla precedente versione.
+
+    ** inserire figura ** 
+
+    Tutti i Mail User Agent sono configurati in modo da avere come server SMTP di uscita mail.palfag.it, 
+    per la traduzione del dominio, ogni host della rete contatterà il server DNS aziendale, il cui compito è
+    quello di risolvere il dominio mail.palfag.it -> 192.168.8.150.
+
+    All'invio di una email da parte di un dipendente, questa verrà indirizzata a Postfix (192.168.8.150) che la 
+    ispezionerà. Nel caso in cui dovesse bloccare l’invio della email per via del contenuto sensibile, 
+    Postfix provvederà ad avvisare il MUA (nel nostro caso Outlook) del suo rifiuto di consegnare il messaggio.
+
+    Nel caso in cui il messaggio sia autorizzato ad essere inoltrato, Postfix attiverà la sua funzione di inoltro 
+    girandolo verso i server mail di Aruba. Fisicamente consegnerà il frame al suo default gateway.
+
+
+    \section{Configurazione di controlli interni}
+    Per lo sviluppo di filtri sarà necessario come prima cosa, se non esistono già, creare i file:
+
+    \begin{itemize}
+        \item header\_checks
+        \item mime\_header\_checks
+        \item body\_checks
+    \end{itemize}
+
+    All'interno del file header\_checks verranno sviluppati dei controlli per il filtraggio degli header
+    (From:, To:, Subject:, ecc\dots), body\_checks si occuperà di effettuare filtri sul corpo del messaggio e
+    infine mime\_header\_checks si occuperà degli allegati. È importante notare che il controllo degli allegati
+    nativo in Postfix permette soltanto di filtrare in base al nome del file e all'estensione. Successivamente 
+    verrà sviluppato un filtro esterno più completo per l'analisi del contenuto dei file.
+
+    Una volta creati i file, sarà necessario aggiungere al file \textit{/etc/postfix/main.cf} le seguenti tre righe:
+
+    \begin{verbatim}
+        header_checks = regexp:/etc/postfix/header_checks
+        mime_header_checks = regexp:/etc/postfix/mime_header_checks
+        body_checks = regexp:/etc/postfix/body_checks
+    \end{verbatim}
+
+    Postfix utilizzerà questi file per effettuare il filtraggio dei contenuti (es. corpo e oggetto) e anche del
+    contesto (es. mittente e destinatario). Sono definiti più file perché Postfix permette di utilizzare regole 
+    diverse per filtrare ad esempio oggetto e corpo del messaggio.
+
+    \section{Sviluppo di filtri interni}
+    In questo capitolo provvederemo allo sviluppo di una serie di filtri per fare in modo che Postfix possa 
+    rilevare eventuali email da bloccare così da prevenire eventuali perdite di dati. 
+    Ci serviremo delle espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato possiamo 
+    poi decidere in che modo vogliamo che si comporti Postfix al verificarsi dell’evento, 
+    ovvero quando rileva in un’ email un contenuto identificato sensibile, oppure quando riceve un’email da un 
+    mittente inserito in una blacklist.
+    I controlli hanno la seguente struttura: “se trovi questo allora fai quello”, 
+    infatti nella prima parte inseriremo il contenuto da rilevare e nella seconda specificheremo l’azione di 
+    risposta da intraprendere.
+
+    Incominceremo dividendo i filtri da sviluppare in due macro-aree:
+
+    \begin{enumerate}
+        \item Analisi del contenuto;
+        \item Analisi del contesto.
+    \end{enumerate}
+
+    \subsection{Analisi del contenuto}
+    Questi tipo di controlli si occuperanno del filtraggio del contenuto dell'email, 
+    andando a ispezionare oggetto, corpo del messaggio ed eventuali allegati. 
+    
+    Utilizzeremo le espressioni regolari per individuare e bloccare messaggi di posta che contengono metodi di 
+    pagamento (ad esempio Carte VISA), o permetterne l’invio eliminando il contenuto sensibile. 
+    
+    Importante ricordare che Postfix effettua il controllo riga per riga, quindi se viene identificato un 
+    contenuto sensibile, e come azione di risposta decidessimo di eliminarlo e procedere all’invio, 
+    l’intera riga sarà eliminata (questo potrebbe compromettere l’integrità/significato originale del messaggio). 
+    
+    Inseriremo dei controlli sull’oggetto inserendo parole chiave che, se presenti, 
+    potranno portare al blocco dell’invio o alla quarantena del messaggio. Per gli allegati invece potremmo 
+    effettuare controlli esclusivamente sul filename o sull’estensione. 
+
+    \subsubsection{Controlli sull'oggetto (file header\_checks):}
+
+    1. Blocco delle email che contengono le parole chiave: URGENTE, TOP SECRET, SENSIBILE, SEGRETO.
+    In questo caso Postfix bloccherà il messaggio e avviserà il mittente della decisione intrapresa.
+
+    \begin{verbatim}
+    /^Subject:(.)*(URGENTE | TOP SECRET| … | SEGRETO)(.)*/
+        REJECT Il server ha bloccato il messaggio per 
+        la possibile presenza di dati sensibili
+    \end{verbatim}
+
+    2. Quarantena dei messaggi che contengono la parola chiave PRIVATO:
+    \begin{verbatim}
+    /^Subject:(.)*PRIVATO(.)*/
+        HOLD Il server ha messo in quarantena il messaggio per 
+        la possibile presenza di dati sensibili
+    \end{verbatim}
+
+    3. Blocco dei messaggi che hanno come oggetto una carta VISA:
+    \begin{verbatim}
+    /^Subject:(.)*([0-9]{4}( |-)*){3}[0-9]{4}(.)*/
+        REJECT EMAIL BLOCCATA: CARTA VISA RICONOSCIUTA
+    \end{verbatim}
+
+
+    \subsubsection{Controlli sull'allegato (file mime\_header\_checks):}
+
+    1. Blocco delle email che contengono allegati con estensione .ZIP:
+
+    \begin{verbatim}
+    /^(.)*name=\"(.*)\.zip\"/
+        REJECT allegato ZIP Bloccato
+    \end{verbatim}
+
+    \subsubsection{Controlli sul corpo (file body\_checks):}
+
+    1. Blocco carte VISA presenti nel corpo del messaggio:
+    \begin{verbatim}
+    /^(.)*([0-9]{4}( |-)*){3}[0-9]{4}(.)*/
+        REJECT EMAIL BLOCCATA: CARTA VISA RICONOSCIUTA
+    \end{verbatim}
+    2. Eliminazione del codice fiscale presente nel messaggio:
+    \begin{verbatim}
+    /^(.)*([A-z]){6}([0-9]){2}[A-z]([0-9]){2}[A-z][0-9]{3}[A-z](.)*/
+        IGNORE CODICE FISCALE RIMOSSO DAL MESSAGGIO
+    \end{verbatim}
+
+
+    \subsection{Analisi del contesto}
+    In quest’area i controlli tratteranno il contesto e quindi andranno a focalizzarsi sulle restanti 
+    informazioni che compongono l’email. Effettueremo, ad esempio, controlli per filtrare in base al 
+    mittente del messaggio o del destinatario. 
+    Bloccheremo l’invio delle email aziendali per un preciso dominio e potremo fare in modo che postfix 
+    non accetti email che provengono da un account di posta elettronica diverso da quello aziendale 
+    (nome.cognome@certimeter.it). 
+
+    \subsubsection{Mettere in blacklist un mittente:}
+    Come impostazione di default postfix accetta le email che provengono da qualunque indirizzo di posta, 
+    tuttavia è possibile inserire un mittente in blacklist in modo che postfix rifiuti tutte le email che 
+    provengono dal suo indirizzo di posta. Vi sono diverse possibilità per mettere un mittente in blacklist, 
+    tuttavia tutte effettuano un controllo sull’header FROM: del messaggio.
+
+    \begin{verbatim}
+    /^From:(.)*francesco.lorusso@certimeter.it(.)*/
+        REJECT  SENDER ADDRESS REJECTED: BLACKLISTED
+    \end{verbatim}
+
+    \subsubsection{Blocco delle email indirizzate ad un certo dominio:}
+    Possiamo supporre ad esempio che da policy aziendali sia vietato, per i dipendenti, 
+    inviare email al dominio reply.it In questo caso verrà inserito il seguente filtro:
+
+    \begin{verbatim}
+    /^To:.*@reply.it/
+        REJECT RECIPIENT DOMAIN BANNED
+    \end{verbatim}
+
+    \subsubsection{Blocco delle email inviate da caselle di posta differenti da quelle aziendali:}
+    \begin{verbatim}
+    if /^From:/
+    !/(^From:.*@certimeter.it)/ 
+        REJECT SENDER NON-CORPORATE DOMAIN REJECTED
+    endif
+    \end{verbatim}
+
+    \section{Script Python esterno per la gestione degli allegati}
+    Il filtraggio dei contenuti di Postfix è abbastanza limitato, poiché non permette di analizzare il contenuto
+    degli allegati. Postfix però prevede la possibilità di utilizzare dei plug-in esterni. Per questo motivo ho 
+    sviluppato uno script Python che permettesse l'analisi e l'identificazione di contenuti sensibili presenti 
+    negli allegati.
+
+
+    \section{Shell code}
+    Nel suo sito ufficiale Postfix offre uno script bash di esempio che possiamo personalizzare per il nostro 
+    obiettivo. Lo script avrà la funzione di mediatore tra Postfix e Python. 
+    In ingresso gira la email, che Postfix consegna allo script wrapper.sh, allo script Python 
+    il cui compito è quello di analizzarla.
+    In base al valore di uscita dello script Python, il nostro wrapper.sh si comporterà in due modi:
+
+    
+    \begin{enumerate}
+        \item se sys.exit(0): ritorna la email a Postfix in modo che possa continuare il percorso;
+        \item se sys.exit(1): il messaggio viene rifiutato poiché trovati dati sensibili. (Postfix invierà una 
+        email di ritorno al mittente spiegando che non ha potuto consegnare il messaggio). 
+    \end{enumerate}
+
+    \begin{verbatim}
+1 #!/bin/sh
+2 
+3 # Simple shell-based filter. It is meant to be invoked as follows:
+4 #       /path/to/script -f sender recipients...
+5 
+6 # Localize these. The -G option does nothing before Postfix 2.3.
+7 INSPECT_DIR=/var/spool/filter
+8 SENDMAIL="/usr/sbin/sendmail -G -i" # NEVER NEVER NEVER use "-t" here.
+9 
+10 # Exit codes from <sysexits.h>
+11 EX_TEMPFAIL=75
+12 EX_UNAVAILABLE=69
+13 
+14 # Clean up when done or when aborting.
+15 trap "rm -f in.$$" 0 1 2 3 15
+16 
+17 # Start processing.
+18 cd $INSPECT_DIR || {
+19     echo $INSPECT_DIR does not exist; exit $EX_TEMPFAIL; }
+20 
+21 cat >in.$$ || { 
+22     echo Cannot save mail to file; exit $EX_TEMPFAIL; }
+23 
+24 # Specify your content filter here.
+25 # filter <in.$$ || {
+26 #   echo Message content rejected; exit $EX_UNAVAILABLE; }
+27 
+28 $SENDMAIL "$@" <in.$$
+29 
+30 exit $?
+    \end{verbatim}
+
+    \section{Integrazione script esterno}
+    Per fare in modo che venga eseguito il filtro esterno, sarà necessario configurare Postfix in modo
+    che consegni l'email al mio script.
+
+    1. Prima di tutto sarà necessario aggiungere nel file \textit{/etc/postfix/master.cf} il filtro:
+
+    \begin{verbatim}
+    /etc/postfix/master.cf:
+    # =============================================================
+    # service type  private unpriv  chroot  wakeup  maxproc command
+    #               (yes)   (yes)   (yes)   (never) (100)
+    # =============================================================
+    filter    unix  -       n       n       -       10      pipe
+        flags=Rq user=filter null_sender=
+        argv=/path/to/script -f ${sender} -- ${recipient}
+    \end{verbatim}
+
+    In questo modo abbiamo registrato il filtro chiamato ``my\_filter''.
+
+    2. Adesso dobbiamo dire a Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
+
+    \begin{verbatim}
+        /etc/postfix/master.cf:
+    # =============================================================
+    # service type  private unpriv  chroot  wakeup  maxproc command
+    #               (yes)   (yes)   (yes)   (never) (100)
+    # =============================================================
+    smtp      inet  ...other stuff here, do not change...   smtpd
+            -o content_filter=filter:dummy  
+    \end{verbatim}
+
+    3. Infine sarà necessario riavviare postfix:
+
+    \begin{verbatim}
+    postfix reload 
+    \end{verbatim}
+    
+
+    \section{Test}

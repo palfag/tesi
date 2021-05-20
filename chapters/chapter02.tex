@@ -26,7 +26,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     \cite{OpenLab}
 
 
-\subsection{Tipi di dati monitorati}
+\subsection{Tipi di dati monitorati\cite{DLP1}}
     Abbiamo detto che il dato è di fondamentale importanza e che le soluzioni DLP si occupano di proteggere i dati sensibili.
     È opportuno spiegare cosa s'intende quando si parla di dati sensibili e che tipi di dati vengono monitorati 
     da una soluzione DLP. I dati sensibili sono dati che hanno maggior valore per un'azienda e che possono comportare 
@@ -60,7 +60,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     \subsubsection{data-at-rest}
         I dati a riposo sono dati al momento inattivi, che sono immagazzinati fisicamente in database,
         o in file (ad esempio in file excel), oppure su dispositivi di storage come HDD o SSD, eccetera.
-        Se sono salvati in un computer, questo tipo di dati si trovano in memoria secondaria.
+        Se sono salvati in un computer, questi di dati si trovano in memoria secondaria.
         Le modalità di protezione di questi dati sono denominate DARP\footnote{\textit{DARP}: Data At Rest Protection}, 
         di cui fanno parte tecniche come la crittografia dei dati (prima di essere archiviati) oppure come la cifratura
         dell'intero dispositivo di storage, protezione con password, il controllo degli accessi, eccetera.
@@ -80,7 +80,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
         una destinazione finale. Le misure di protezione dei dati in transito sono fondamentali in quanto
         i dati sono considerati meno sicuri durante il movimento.
         Alcune tecniche di protezione base sono la cifratura dei dati
-        e l'utilizzo di connessioni sicure (HTTPS, FTPS, TLS, SSL, SMTPS).
+        e l'utilizzo di connessioni sicure (HTTPS, FTPS, TLS/SSL, SMTPS).
 
 \subsection{Identificazione dei dati}
     Vi sono diversi metodi per l'identificazione di dati sensibili, l'utilizzo di una tecnica piuttosto che
@@ -92,7 +92,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     utilizzata per i dati strutturati. 
 
     \subsubsection{Dictionary lookup}
-    La tecnica del dizionario si basa sull'utilizzo di un file di testo che come funzione quella
+    La tecnica del dizionario si basa sull'utilizzo di un file di testo che ha come funzione quella
     di un vero e proprio dizionario. All'interno, il file viene riempito di parole chiave. 
     Il dizionario verrà utilizzato come database di confronto per identificare dati sensibili all'interno 
     di documenti. Questo metodo è particolarmente adatto per dati non strutturati.
@@ -122,7 +122,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             dati.
 
     \subsubsection{Endpoint DLP}
-            Consiste in un agent che va installato in ogni computer che si vuole proteggere. A differenza del precedente 
+            Consiste in un agent che va installato in ogni computer che si vuole monitorare. A differenza del precedente 
             però l'eDLP protegge sempre i dati, anche quando il computer non è all'interno della rete aziendale, ma ad esempio in un 
             aeroporto, utilizzando una rete pubblica. Un endpoint DLP permette di implementare le tecniche di sicurezza
             citate precedentemente per la protezione dei dati in uso. un eDLP può ad esempio proteggere file sensibili 
@@ -138,7 +138,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 La posta elettronica è uno dei servizi Internet più conosciuti e utilizzati assieme alla navigazione web. 
 Rappresenta la controparte digitale ed elettronica della posta ordinaria e cartacea e come tale l’email 
 rappresenta un mezzo di comunicazione asincrono. A differenza del servizio postale ordinario, però, 
-la posta elettronica è gratuita e veloce.
+la posta elettronica è gratuita e veloce.\cite{posta}
 
 \subsection{Architettura del sistema di posta elettronica}
 Vi sono tre componenti principali che permettono il funzionamento del sistema di posta elettronica:
@@ -154,6 +154,7 @@ Ogni utente ha una casella di posta collocata in un mail server.
 Un tipico viaggio compiuto da un messaggio di posta ha come partenza lo user agent del mittente, 
 giunge al mail server del mittente e prosegue fino al mail server del destinatario. 
 Infine il destinatario utilizzerà uno dei protocolli di accesso alla posta per scaricare e leggere il messaggio.
+\cite{kurose2008reti}
 
 ** inserire foto architettura **
 
@@ -166,15 +167,15 @@ da server SMTP.
 SMTP trasferisce i messaggi di posta dal mail server del mittente al mail server del destinatario. 
 Il protocollo SMTP di solito non utilizza mail server intermedi per inviare posta, anche quando i server finali 
 sono collocati agli angoli opposti del mondo.
-SMTP è un protocollo di tipo push, poiché la connessione TCP viene aperta dall’host vuole inviare il messaggio. 
-Il protocollo SMTP presenta delle somiglianze ai protocolli umani utilizzati per la comunicazione. 
+SMTP è un protocollo di tipo push, poiché la connessione TCP viene aperta dall’host che vuole inviare il messaggio. 
+Il protocollo SMTP è simile ai protocolli umani utilizzati per la comunicazione. 
 Prima di tutto il client SMTP apre una connessione TCP sulla porta 25 verso il server SMTP. 
 Una volta stabilita la connessione client e server effettuano una sorta di presentazione prima di scambiarsi 
 informazioni. Dopo la reciproca presentazione il client invia il messaggio.
 Dato che SMTP utilizza connessioni persistenti, se un client ha più messaggi da inviare al server, 
 può utilizzare la stessa connessione TCP per inviarli tutti. Una volta terminato di inviare tutti i messaggi, 
 il client ordina a TCP di chiudere la connessione.
-Di seguito un esempio di comunicazione SMTP:
+Di seguito un esempio di comunicazione SMTP:\cite{SMTP}
 
 \begin{verbatim}
     S: 220 smtp.example.com ESMTP Postfix
@@ -204,14 +205,14 @@ Quindi l’user agent di un destinatario non potrà utilizzare questo protocollo
 server. Per compiere questa operazione è necessario utilizzare dei protocolli di tipo pull. 
 Nei protocolli di tipo pull, la connessione TCP viene aperta da chi vuole ricevere i dati.
 L’user agent di un destinatario di posta utilizzerà principalmente IMAP per scaricare la posta in locale dal suo mail server 
-(POP3 ha delle limitazioni quindi non è molto utilizzato). 
+(POP3 ha delle limitazioni, quindi non è più molto utilizzato). 
 Molte persone però accedono alla posta elettronica utilizzando il browser, in questo caso il protocollo utilizzato 
 per scaricare i messaggi di posta è HTTP.
 
 \subsection{Protocolli crittografici TLS/SSL}
 SSL (secure sockets layer) permette di rendere sicuro TCP,  fornendogli servizi di sicurezza, 
 comprese la riservatezza, l’integrità dei dati e l’autenticazione del server. 
-Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).
+Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).\cite{tls}
 
 \begin{enumerate}
     \item \textbf{riservatezza}: il traffico viaggia cifrato;

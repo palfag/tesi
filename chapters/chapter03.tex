@@ -21,7 +21,7 @@ La seguente lista elenca alcuni dei principali prodotti presenti sul mercato:
 
   Per lo studio di mercato prenderemo in causa i primi cinque della lista. 
   La tabella \ref{tabellaVendor} mostra similitudini e differenze delle caratteristiche possedute dai 
-  principali prodotti DLP sul mercato.
+  principali prodotti DLP.
 
   \begin{table}[htp]
     \centering
@@ -74,7 +74,7 @@ La seguente lista elenca alcuni dei principali prodotti presenti sul mercato:
 
 
     \section{Soluzioni open source}
-    Come si evince nella tabella \ref*{tabellaVendor} si può facilmente notare che nessuno dei 
+    Come si evince nella tabella \ref*{tabellaVendor}, nessuno dei 
     prodotti è open source. Perché? Nel mercato non si trovano tecnologie DLP gratuite valide da
     poter tenere testa a quelle proprietarie. La maggior parte dei prodotti DLP sono a pagamento e 
     sono accompagnati da una demo in modo da poter essere testati.
@@ -100,24 +100,24 @@ l'identificazione di eventuali contenuti sensibili presenti nelle email aziendal
 ed evitarne la diffusione.
 
 Il confronto effettuato tra i prodotti principali presenti sul mercato, anche se nessuno di essi è stato utilizzato 
-ai fini del progetto, è stato utile per capire quali caratteristiche deve possedere la soluzione DLP implementata.
+ai fini del progetto, è stato utile per capire quali caratteristiche dovesse possedere la soluzione DLP implementata.
 
 \section{Tecnologie utilizzate}
 Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     \subsection{Postfix}
     Postfix è un server di posta open source scritto in C da Wietse Zweitze Venema e distribuito con licenza IBM 
     Public License. Nasce alla fine degli anni '90 con lo scopo di fornire un'alternativa a Sendmail che offrisse 
-    maggiori garanzie per quanto riguarda la sicurezza. 
+    maggiori garanzie per quanto riguarda la sicurezza.\cite{Postfix1}
     Dato che il capitolo 5 si concentra esclusivamente su Postfix e come è stato utilizzato per implementare la 
     soluzione DLP, non spenderò altre parole per parlarne in questo paragrafo.
     
     \subsection{Python}
     Python è un linguaggio di programmazione di più alto livello che si presta ad essere utilizzato in ambito didattico per la sua semplicità. È orientato a oggetti, adatto, tra gli altri usi, a sviluppare 
-    degli script. A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
+    degli script.\cite{Python1} A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
     Il programma interprete di Python si occupa di tradurre le righe scritte in Python in istruzioni direttamente 
     comprensibili al computer (linguaggio macchina). I programmi scritti in Python sono portabili, 
     cioè possono essere eseguiti su differenti sistemi operativi, tra i quali Windows, Mac OS X e GNU/Linux. 
-    Inoltre è gratuito e open source, utilizzabile da chiunque.
+    Inoltre è gratuito e open source, utilizzabile da chiunque.\cite{boscaini2017imparare}
 
     
     \subsection{Bash}
@@ -126,18 +126,14 @@ Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     serie di funzioni predefinite, o di eseguire programmi e script.
     Bash mette a disposizione un semplice linguaggio di scripting nativo che permette di svolgere compiti 
     più complessi, non solo raccogliendo in uno script una serie di comandi, 
-    ma anche utilizzando variabili, funzioni e strutture di controllo di flusso.
+    ma anche utilizzando variabili, funzioni e strutture di controllo di flusso.\cite{Bash1}
     
     \subsection{Apache Tika}
-    Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi. 
-    Ho utilizzato questa libreria all’interno del mio script Python per estrapolare il testo dai file allegati 
-    alle email in modo da verificare la presenza di dati sensibili.
+    Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi.\cite{tika} 
+    %Ho utilizzato questa libreria all’interno del mio script Python per estrapolare il testo dai file allegati 
+    %alle email in modo da verificare la presenza di dati sensibili.
     
     \subsection{Virtualbox}
-    Oracle VM VirtualBox è un software gratuito e open source per l'esecuzione di macchine virtuali. 
+    Oracle VM VirtualBox è un software gratuito e open source per l'esecuzione di macchine virtuali. \cite{VirtualBox1}
     Attraverso l’uso di questo software ho potuto installare il sistema operativo CentOS 8 
     (distribuzione Linux derivata da Red Hat Enterprise Linux), che ha ospitato il mail server Postfix.
-%\section{Protocolli utilizzati}
-%    \subsection{SSH}
-%    \subsection{SMTP}
-%    \subsection{TLS/SSL}
