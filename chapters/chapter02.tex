@@ -1,4 +1,4 @@
-\chapter{Data Loss Prevention \\e Posta Elettronica}
+\chapter{Requsiti teorici}
 
 \section{Data Loss Prevention}
 Con il termine Data Loss Prevention si fa riferimento a 
@@ -208,7 +208,23 @@ L’user agent di un destinatario di posta utilizzerà principalmente IMAP per s
 Molte persone però accedono alla posta elettronica utilizzando il browser, in questo caso il protocollo utilizzato 
 per scaricare i messaggi di posta è HTTP.
 
-\pagebreak
+\subsection{Protocolli crittografici TLS/SSL}
+SSL (secure sockets layer) permette di rendere sicuro TCP,  fornendogli servizi di sicurezza, 
+comprese la riservatezza, l’integrità dei dati e l’autenticazione del server. 
+Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).
+
+\begin{enumerate}
+    \item \textbf{riservatezza}: il traffico viaggia cifrato;
+    \item \textbf{integrità dei dati}: se non venisse assicurata l'integrità dei dati, un soggetto terzo
+    potrebbe modificare il messaggio;
+    \item \textbf{autenticazione da parte del server}: L'autenticazione TLS è unilaterale, solo il server si 
+    autentica presso il client. Il mail client valida il certificato del server, controllando che la firma dei 
+    certificati del server sia valida e riconosciuta da una certificate authority.
+    In questo modo il mail client è sicuro dell'autenticità del mail server. 
+    %Per questo motivo Postfix ha bisogno di un certificato da mostrare ai mail client.
+\end{enumerate}
+
+
 \subsection{Formato dei messaggi di posta elettronica}
 Un messaggio di posta elettronica contiene una serie di righe di intestazione (header).
 Ogni intestazione è una coppia chiave:valore. Alcune parole chiave sono opzionali (Subject:), 

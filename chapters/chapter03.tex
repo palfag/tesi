@@ -104,13 +104,39 @@ ai fini del progetto, è stato utile per capire quali caratteristiche deve posse
 
 \section{Tecnologie utilizzate}
 Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
-    \subsection{Linux}
     \subsection{Postfix}
+    Postfix è un server di posta open source scritto in C da Wietse Zweitze Venema e distribuito con licenza IBM 
+    Public License. Nasce alla fine degli anni '90 con lo scopo di fornire un'alternativa a Sendmail che offrisse 
+    maggiori garanzie per quanto riguarda la sicurezza. 
+    Dato che il capitolo 5 si concentra esclusivamente su Postfix e come è stato utilizzato per implementare la 
+    soluzione DLP, non spenderò altre parole per parlarne in questo paragrafo.
+    
     \subsection{Python}
-    \subsection{Bash}
-    \subsection{Apache Tika}
-    \subsection{Virtualbox}
+    Python è un linguaggio di programmazione di più alto livello che si presta ad essere utilizzato in ambito didattico per la sua semplicità. È orientato a oggetti, adatto, tra gli altri usi, a sviluppare 
+    degli script. A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
+    Il programma interprete di Python si occupa di tradurre le righe scritte in Python in istruzioni direttamente 
+    comprensibili al computer (linguaggio macchina). I programmi scritti in Python sono portabili, 
+    cioè possono essere eseguiti su differenti sistemi operativi, tra i quali Windows, Mac OS X e GNU/Linux. 
+    Inoltre è gratuito e open source, utilizzabile da chiunque.
 
+    
+    \subsection{Bash}
+    La Bash è la shell più diffusa e utilizzata in ambiente Linux. 
+    Si tratta di un interprete di comandi che permette all'utente di comunicare col sistema operativo attraverso una
+    serie di funzioni predefinite, o di eseguire programmi e script.
+    Bash mette a disposizione un semplice linguaggio di scripting nativo che permette di svolgere compiti 
+    più complessi, non solo raccogliendo in uno script una serie di comandi, 
+    ma anche utilizzando variabili, funzioni e strutture di controllo di flusso.
+    
+    \subsection{Apache Tika}
+    Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi. 
+    Ho utilizzato questa libreria all’interno del mio script Python per estrapolare il testo dai file allegati 
+    alle email in modo da verificare la presenza di dati sensibili.
+    
+    \subsection{Virtualbox}
+    Oracle VM VirtualBox è un software gratuito e open source per l'esecuzione di macchine virtuali. 
+    Attraverso l’uso di questo software ho potuto installare il sistema operativo CentOS 8 
+    (distribuzione Linux derivata da Red Hat Enterprise Linux), che ha ospitato il mail server Postfix.
 %\section{Protocolli utilizzati}
 %    \subsection{SSH}
 %    \subsection{SMTP}
