@@ -22,6 +22,23 @@ Nel nostro caso di utilizzo la VM gestisce un mail server configurato per l'asco
 587. Inoltre sono presenti anche altre due traduzioni per rendere raggiungibile un ipotetico web server e rendere possibile
 la connessione SSH verso la macchina virtuale.
 
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|l|}
+    \hline
+    \textbf{Name} & \textbf{Protocol} & \textbf{Host IP} & \textbf{Host Port} & \textbf{Guest IP} & \textbf{Guest Port} \\ \hline
+    http       & TCP &  & 8080 &  & 80  \\ \hline
+    smtps      & TCP &  & 4444 &  & 465 \\ \hline
+    smtp       & TCP &  & 2525 &  & 25  \\ \hline
+    submission & TCP &  & 5555 &  & 587 \\ \hline
+    ssh        & TCP &  & 2222 &  & 22  \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
 \subsection{Apertura porte del firewall}
 
 Il secondo passo consiste nell’aprire le porte del firewall, che ci servono, in modo tale che le connessioni 
@@ -43,15 +60,23 @@ A questo punto sarà necessario effettuare un reload:
 
 Possiamo verificare che le porte siano state aperte correttamente attraverso il comando:
 \begin{verbatim}
-    firewall-cmd --list-all
+[root@localhost palfag]# firewall-cmd --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 80/tcp 465/tcp 25/tcp 587/tcp 22/tcp
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
 \end{verbatim}
 
-che produrrà il seguente output:
-\begin{verbatim}
-    output
-\end{verbatim}
-
-nella voce ports: verranno listate tutte le porte correntemente aperte.
+La voce \textit{ports:} lista tutte le porte correntemente aperte.
 
 \subsection{Prenotazione IP presso il server DHCP}
 Un server DHCP ha il compito di assegnare ad un dispositivo che si connette alla sua rete il primo indirizzo IP 
@@ -73,7 +98,17 @@ accessibile attraverso il browser, digitando l’indirizzo IP del router nella b
 A questo punto sarà necessario inserire una riga di traduzione associando il MAC (indirizzo di livello 2), 
 del dispositivo interessato, all’indirizzo IP che vogliamo che ottenga ogni volta che ne richieda uno al server DHCP.
 
-\textbf{inserire foto}
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{N.} & \textbf{Indirizzo IP} & \textbf{Nome Dispositivo} & \textbf{MAC}      & \textbf{Opzioni}          \\ \hline
+    1           & 192.168.8.150         & Mac-di-Paolo              & 9A:0A:05:52:3F:07 & \multicolumn{1}{c|}{canc} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
 
 \subsection{Generazione certificato per l'utilizzo del protocollo TLS/SSL}
 Per poter utilizzare il protocollo TLS/SSL sarà necessario generare un certificato.
@@ -150,8 +185,6 @@ certificato e chiave poiché saranno necessari successivamente per la configuraz
 \begin{verbatim}
     yum install postfix mailx cyrus-sasl cyrus-sasl-plain
 \end{verbatim}
-
-
 2. Creare un file, nel mio caso che ho chiamato \textit{sasl\_passwd} dove andremo a mettere le credenziali
 necessarie per l'autenticazione presso il server Aruba:
 
@@ -159,13 +192,11 @@ necessarie per l'autenticazione presso il server Aruba:
     nano /etc/postfix/sasl_passwd
     [smtps.aruba.it]:465    paolo.fagioli@certimeter.it:pwd
 \end{verbatim}
-
 3. Processare il file contenente le credenziali:
 
 \begin{verbatim}
     postmap /etc/postfix/sasl_passwd
 \end{verbatim}
-
 4. Editare il file \textit{/etc/postfix/main.cf}:
 
 \begin{verbatim}
@@ -179,7 +210,6 @@ necessarie per l'autenticazione presso il server Aruba:
     append_dot_mydomain = no
     readme_directory = no
 \end{verbatim}
-
 5. Sempre all'interno del file \textit{/etc/postfix/main.cf} inserire i parametri per la configurazione di TLS,
 in questo momento saranno necessari i certificato e chiave generati precedentemente:
 
@@ -198,19 +228,16 @@ in questo momento saranno necessari i certificato e chiave generati precedenteme
     smtp_sasl_auth_enable = yes
     smtp_sasl_security_options = noanonymous
 \end{verbatim}
-
 6. Avviare Postfix:
 \begin{verbatim}
     systemctl start postfix.service
 \end{verbatim}
-
 7. A questo punto possiamo verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
 provando ad inviare una email da terminale:
 
 \begin{verbatim}
     echo corpo | mail -s “Oggetto” -r emailMittente emailDestinatario 
 \end{verbatim}
-
 8. Una volta testato il funzionamento, sarà necessario configurare Postfix in modo che ascolti dalle porte 465 e 587 
 (la porta 25 è già configurata di default).
 
@@ -235,7 +262,6 @@ sulla porta 587 e sarà dotato di tutte le impostazioni necessarie per supportar
   -o smtpd_recipient_restrictions=permit_sasl_authenticated,reject
   -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
 \end{verbatim}
-
 9. Un procedimento simile per fare in modo che ascolti anche dalla porta 465:
 
 \begin{verbatim}
@@ -256,12 +282,10 @@ sulla porta 587 e sarà dotato di tutte le impostazioni necessarie per supportar
     -o tls_random_exchange_name=/var/lib/postfix/prng_exch
     -o smtpd_tls_auth_only=yes
 \end{verbatim}
-
 10. Avviare sasl\_authd
 \begin{verbatim}
     systemctl start sasl_authd.services
 \end{verbatim}
-
 11. Riavviare Postfix
 \begin{verbatim}
     systemctl restart postfix.service
@@ -269,18 +293,15 @@ sulla porta 587 e sarà dotato di tutte le impostazioni necessarie per supportar
 
 Da questo momento Postfix è pronto per svolgere il suo lavoro.
 
-\pagebreak
-\section{Configurazione mail client MS Outlook}
+\section{Configurazione Microsoft Outlook}
 Il client di posta elettronica standard utilizzato in azienda è Microsoft Outlook, 
 per questo motivo la configurazione avverrà con quest'ultimo, 
-ma ovviamente il procedimento è analogo utilizzando client mail diversi come ad esempio Thunderbird.
+ma ovviamente il procedimento è analogo utilizzando client mail diversi come ad esempio Mozilla Thunderbird.
 Per configurare il client di posta MS Outlook è necessario avviare il software.
 A questo punto andare su ``File'' e fare click su ``Aggiungi account''.
 
 Nella finestra proposta inserire il proprio indirizzo di posta aziendale e selezionare ``Consenti la configurazione
-manuale dell'account'' e poi fare click su ``Connetti'', come è possibile vedere in figura.
-
-** inserire figura ** 
+manuale dell'account'' e poi fare click su ``Connetti''.
 
 Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come mostrato nella tabella seguente:
 
@@ -297,28 +318,36 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     Ricordiamo che la porta 5555 inserita è una porta effimera che successivamente verrà tradotta nella porta 587
     dal NAT di VirtualBox.
-    Selezionare la spunta ``Usa SSL per connetterti''
+    Selezionare la spunta ``Usa SSL per connetterti'', a questo punto dovremmo trovarci nella stessa situazione
+    della figura \ref{confOutlook}.
 
-    ** inserire figura ** 
+        \begin{figure}[htp]
+            \centering
+            \includegraphics[width=12cm, height=20cm, keepaspectratio]{confOutlook.png}
+            \caption{Configurazione di Outlook}\label{confOutlook}
+        \end{figure}        
+    
 
-    Naturalmente poiché il dominio mail.palfag.it non è registrato, 
+    Poiché il dominio mail.palfag.it non è registrato, 
     nessun server DNS sarebbe in grado di compiere la traduzione in 192.168.8.150, 
-    quindi sarà necessario inserire un record manualmente all’interno del file /private/etc/hosts 
-    come mostrato in foto:
+    sarà dunque necessario inserire un record di traduzione manualmente all’interno del file \textit{/private/etc/hosts} 
+    come mostrato nella figura \ref{hosts}.
 
-    ** inserire figura ** 
+    \begin{figure}[htp]
+        \centering
+        \includegraphics[width=12cm, height=20cm, keepaspectratio]{hosts.png}
+        \caption{Aggiunta record di traduzione DNS.}\label{hosts}
+    \end{figure}  
 
-    In realtà in azienda ci sarebbe un server DNS con il compito di tradurre il dominio in indirizzo IP, 
-    e non ci sarebbe bisogno di modificare il file /private/etc/hosts per ogni macchina che deve usare il servizio.
+    In realtà in azienda ci sarà un server DNS con il compito di tradurre il dominio in indirizzo IP, 
+    e non sarebbe più necessario modificare il file \textbf{/private/etc/hosts} per ogni macchina aziendale.
 
 
     A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
     Ci dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
-    Sarà necessario dire al nostro computer di fidarsi sempre del certificato.
-    (Anche in questo caso nella realtà aziendale non ci sarebbe bisogno di effettuare questo passaggio, poiché 
+    Sarà necessario istruire il nostro computer di fidarsi sempre del certificato
+    (anche in questo caso in azienda non ci sarebbe bisogno di effettuare questo passaggio, poiché 
     il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
-
-    ** inserire figura ** 
 
     Una volta fatto questo, sarà possibile inviare le email da Outlook.
 
@@ -327,7 +356,11 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     Una volta effettuate tutte le configurazioni necessarie, sarà possibile migliorare il disegno dell’architettura. 
     Questo disegno rappresenta una versione più realistica del modello reale, rispetto alla precedente versione.
 
-    ** inserire figura ** 
+    \begin{figure}[htp]
+        \centering
+        \includegraphics[width=12cm, height=20cm, keepaspectratio]{arch_final.png}
+        \caption{Aggiunta record di traduzione DNS.}\label{hosts}
+    \end{figure} 
 
     Tutti i Mail User Agent sono configurati in modo da avere come server SMTP di uscita mail.palfag.it, 
     per la traduzione del dominio, ogni host della rete contatterà il server DNS aziendale, il cui compito è
@@ -340,7 +373,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     Nel caso in cui il messaggio sia autorizzato ad essere inoltrato, Postfix attiverà la sua funzione di inoltro 
     girandolo verso i server mail di Aruba. Fisicamente consegnerà il frame al suo default gateway.
 
-
+    \pagebreak
     \section{Configurazione di controlli interni}
     Per lo sviluppo di filtri sarà necessario come prima cosa, se non esistono già, creare i file:
 
@@ -411,14 +444,12 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
         REJECT Il server ha bloccato il messaggio per 
         la possibile presenza di dati sensibili
     \end{verbatim}
-
     2. Quarantena dei messaggi che contengono la parola chiave PRIVATO:
     \begin{verbatim}
     /^Subject:(.)*PRIVATO(.)*/
         HOLD Il server ha messo in quarantena il messaggio per 
         la possibile presenza di dati sensibili
     \end{verbatim}
-
     3. Blocco dei messaggi che hanno come oggetto una carta VISA:
     \begin{verbatim}
     /^Subject:(.)*([0-9]{4}( |-)*){3}[0-9]{4}(.)*/
@@ -531,7 +562,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 22     echo Cannot save mail to file; exit $EX_TEMPFAIL; }
 23 
 24 # Specify your content filter here.
-25 # filter <in.$$ || {
+25 # python3 /media/shared/my_filter.py <in.$$ || {
 26 #   echo Message content rejected; exit $EX_UNAVAILABLE; }
 27 
 28 $SENDMAIL "$@" <in.$$
@@ -542,7 +573,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \section{Integrazione script esterno}
     Per fare in modo che venga eseguito il filtro esterno, sarà necessario configurare Postfix in modo
     che consegni l'email al mio script.
-
+    
     1. Prima di tutto sarà necessario aggiungere nel file \textit{/etc/postfix/master.cf} il filtro:
 
     \begin{verbatim}
@@ -551,13 +582,12 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     # service type  private unpriv  chroot  wakeup  maxproc command
     #               (yes)   (yes)   (yes)   (never) (100)
     # =============================================================
-    filter    unix  -       n       n       -       10      pipe
-        flags=Rq user=filter null_sender=
-        argv=/path/to/script -f ${sender} -- ${recipient}
+    my_filter unix	  -	      n	      n	      -	      -	    pipe
+	    flags=Rq user=filter 
+        argv=/home/filter/wrapper.sh -f ${sender} -- ${recipient}
     \end{verbatim}
-
     In questo modo abbiamo registrato il filtro chiamato ``my\_filter''.
-
+    
     2. Adesso dobbiamo dire a Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
 
     \begin{verbatim}
@@ -566,10 +596,10 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     # service type  private unpriv  chroot  wakeup  maxproc command
     #               (yes)   (yes)   (yes)   (never) (100)
     # =============================================================
-    smtp      inet  ...other stuff here, do not change...   smtpd
-            -o content_filter=filter:dummy  
+    submission inet   n       -       n        -      -      smtpd
+            -o content_filter=my_filter:dummy  
     \end{verbatim}
-
+    
     3. Infine sarà necessario riavviare postfix:
 
     \begin{verbatim}
