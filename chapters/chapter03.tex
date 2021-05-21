@@ -107,17 +107,17 @@ Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     \subsection{Postfix}
     Postfix è un server di posta open source scritto in C da Wietse Zweitze Venema e distribuito con licenza IBM 
     Public License. Nasce alla fine degli anni '90 con lo scopo di fornire un'alternativa a Sendmail che offrisse 
-    maggiori garanzie per quanto riguarda la sicurezza.\cite{Postfix1}
+    maggiori garanzie per quanto riguarda la sicurezza \cite{Postfix1}.
     Dato che il capitolo 5 si concentra esclusivamente su Postfix e come è stato utilizzato per implementare la 
     soluzione DLP, non spenderò altre parole per parlarne in questo paragrafo.
     
     \subsection{Python}
     Python è un linguaggio di programmazione di più alto livello che si presta ad essere utilizzato in ambito didattico per la sua semplicità. È orientato a oggetti, adatto, tra gli altri usi, a sviluppare 
-    degli script.\cite{Python1} A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
+    degli script \cite{Python1}. A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
     Il programma interprete di Python si occupa di tradurre le righe scritte in Python in istruzioni direttamente 
     comprensibili al computer (linguaggio macchina). I programmi scritti in Python sono portabili, 
     cioè possono essere eseguiti su differenti sistemi operativi, tra i quali Windows, Mac OS X e GNU/Linux. 
-    Inoltre è gratuito e open source, utilizzabile da chiunque.\cite{boscaini2017imparare}
+    Inoltre è gratuito e open source, utilizzabile da chiunque \cite{boscaini2017imparare}.
 
     
     \subsection{Bash}
@@ -126,14 +126,15 @@ Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     serie di funzioni predefinite, o di eseguire programmi e script.
     Bash mette a disposizione un semplice linguaggio di scripting nativo che permette di svolgere compiti 
     più complessi, non solo raccogliendo in uno script una serie di comandi, 
-    ma anche utilizzando variabili, funzioni e strutture di controllo di flusso.\cite{Bash1}
+    ma anche utilizzando variabili, funzioni e strutture di controllo di flusso \cite{Bash1}.
     
     \subsection{Apache Tika}
-    Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi.\cite{tika} 
+    Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi \cite{tika}.
+    Libreria utile per estrarre il testo dagli allegati delle email per verificare se contengono dati sensibili. 
     %Ho utilizzato questa libreria all’interno del mio script Python per estrapolare il testo dai file allegati 
     %alle email in modo da verificare la presenza di dati sensibili.
     
     \subsection{Virtualbox}
-    Oracle VM VirtualBox è un software gratuito e open source per l'esecuzione di macchine virtuali. \cite{VirtualBox1}
+    Oracle VM VirtualBox è un software gratuito e open source per l'esecuzione di macchine virtuali \cite{VirtualBox1}.
     Attraverso l’uso di questo software ho potuto installare il sistema operativo CentOS 8 
     (distribuzione Linux derivata da Red Hat Enterprise Linux), che ha ospitato il mail server Postfix.

@@ -14,26 +14,27 @@
   Per questo motivo ho deciso di utilizzare Postfix, un software nato con l'obiettivo di sostituire Sendmail. Il passaggio
   tra i due è piuttosto semplice dato che Postfix è stato progettato in modo da essere compatibile con il 
   suo predecessore.
-  A differenza dei prodotti DLP trattati nel capitolo 2, sia Sendmail che Postfix sono software open source e
+  A differenza dei prodotti DLP trattati nel capitolo 3, sia Sendmail che Postfix sono software open source e
   quindi rappresentano un'ottima soluzione per lo sviluppo di questo progetto.
-  Nel prossimo paragrafo tratteremo un'introduzione su cos'è Postfix e sulla sua architettura. Per ulteriori
+  Nel prossimo paragrafo tratteremo un'introduzione su Postfix e sulla sua architettura. Per ulteriori
   informazioni è possibile consultare il sito ufficiale al seguente indirizzo: \url{http://www.postfix.org/}
    
   \pagebreak
   \section{Introduzione di Postfix}
-  Postfix è un MTA (mail server) che trasporta messaggi di posta elettronica da un MUA (mail client) verso un server remoto o in locale. Per lo sviluppo della soluzione DLP utilizzeremo come MUA ufficiale Outlook, poiché è il mail client utilizzato in azienda e configureremo Postifix come mail server di inoltro, in modo che inoltri le email verso il server di posta elettronica aziendale Aruba. Una delle funzionalità particolarmente interessanti che offre Postfix è quella di effettuare un’analisi sul contenuto delle email (vedremo nei capitoli 5 e 6 come configurare il controllo dei contenuti e come sviluppare dei filtri).
+  Postfix è un MTA (mail server) che trasporta messaggi di posta elettronica da un MUA (mail client) verso un server remoto o in locale. Per lo sviluppo della soluzione DLP utilizzeremo come MUA ufficiale Outlook, poiché è il mail client utilizzato in azienda e configureremo Postifix come mail server di inoltro, in modo che inoltri le email verso il server di posta elettronica aziendale Aruba. Una delle funzionalità particolarmente interessanti che offre Postfix è quella di effettuare un’analisi sul contenuto delle email (vedremo durante la fase di implementazione come configurare il controllo dei contenuti e come sviluppare dei filtri).
   
   \subsection{Architettura di Postfix}
-  Il vantaggio principale che ha portato Postfix a diventare l’erede di Sendmail, oltre la compatibilità, è la sicurezza. Postfix è stato progettato in modo da essere dotato di un’architettura modulare. È composto da diversi demoni, ognuno dei quali svolge un preciso compito ed esegue con i privilegi minimi necessari per portarlo a termine. Il  master è l’unico processo che esegue con i privilegi di root e rimane sempre attivo. La funzione principale del master è quella di gestire tutti gli altri processi. I processi non hanno nessuna relazione di parentela con i processi utente quindi sono immuni da vulnerabilità che coinvolgono la relazione padre-figlio. Per questo motivo Postfix non è vulnerabile da attacchi che sfruttano l’interprocess communication, come ad esempio l’invio di segnali o l’utilizzo della memoria condivisa. Postfix è immune anche da attacchi di tipo Buffer Overflow. In caso di mancanza di risorse è progettato per rallentare i suoi compiti, si fa da parte in modo che il sistema si possa riprendere, rendendo meno efficienti gli attacchi DOS nei suoi confronti.
+  Il vantaggio principale che ha portato Postfix a diventare l’erede di Sendmail, oltre la compatibilità, è la sicurezza. Postfix è stato progettato in modo da essere dotato di un’architettura modulare. È composto da diversi demoni, ognuno dei quali svolge un preciso compito ed esegue con i privilegi minimi necessari per portarlo a termine. Il  master è l’unico processo che esegue con i privilegi di root e rimane sempre attivo. La funzione principale del master è quella di gestire tutti gli altri processi. I processi non hanno nessun legame di parentela con i processi utente, quindi sono immuni da vulnerabilità che coinvolgono la relazione padre-figlio. Per questo motivo Postfix non è vulnerabile da attacchi che sfruttano l’interprocess communication, come ad esempio l’invio di segnali o l’utilizzo della memoria condivisa. Postfix è immune anche da attacchi di tipo Buffer Overflow. In caso di mancanza di risorse è progettato per rallentare i suoi compiti, facendosi da parte in modo che il sistema si possa riprendere, rendendo meno efficienti gli attacchi DOS nei suoi confronti.
   
-  La ricezione dei messaggi può avvenire in due modi: localmente, oppure tramite internet.
+  La ricezione dei messaggi può avvenire in due modi: localmente, oppure tramite la rete \cite{hildebrandt2005book}.
+  
   \subsection{Ricezione locale dei messaggi}
   La ricezione locale di email può avvenire ad esempio quando si invia un messaggio da terminale (dallo stesso host che ospita il server Postfix) utilizzando il programma sendmail. 
   
   I messaggi locali sono depositati nella cartella maildrop dal comando postdrop di Postfix. Postdrop non fa altro che creare un file all’interno della cartella maildrop copiandone all’interno l’input passato al comando (stdin, che corrisponde alla nostra email inviata localmente). 
   
   Il demone pickup a questo punto preleva il messaggio dalla cartella (coda) maildrop e lo invia al demone cleanup. Questo è il demone incaricato di effettuare i controlli sul contenuto che come già detto verranno esposti nel capitolo 6. Una volta che l’email ha superato i controlli, questa finirà nella coda dei messaggi in arrivo e cleanup avviserà il gestore delle code (qmgr). 
-  Nel nostro caso, poiché Postfix sarà configurato come relay mail server, qmgr contatterà smtp per inviare il messaggio al next-hop. In caso si dovesse consegnare il messaggio localmente verrebbe contattato local e nel caso lo si passasse ad un comando pipe.
+  Nel nostro caso, poiché Postfix sarà configurato come relay mail server, qmgr contatterà smtp per inviare il messaggio al next-hop. In caso si dovesse consegnare il messaggio localmente verrebbe contattato local e nel caso lo si passasse ad un comando pipe \cite{Postfix2}.
   
   \subsection{Ricezione dei messaggi attraverso la rete}
   I messaggi ricevuti dalla rete sono accettati dal demone smtpd. Una volta ricevuto il messaggio, smtpd provvederà a consegnarlo a cleanup e da quel momento la strada percorsa sarà la stessa di quella effettuata dalle email ricevute in locale.
@@ -120,7 +121,7 @@
       
       \item{\textbf{REDIRECT user@dominio.it:}} 
       L'ultima opzione è quella di REDIRECT e, come si può intuire dalla parola, instrada il messaggio al 
-      destinatario specificato, anziché inviarlo a quello originale.
+      destinatario specificato, anziché inviarlo a quello originale \cite{hildebrandt2005book}.
   \end{enumerate}
   \end{table}
   
@@ -144,30 +145,86 @@
   trovano coda.
   
   \subsubsection{Visualizzazione dei messaggi in coda}
-  Attraverso il comando postqueue -p o mailq (tenuto per compatibilità con Sendmail) è possibile visualizzare tutti
+  Attraverso il comando \textit{postqueue -p} oppure \textit{mailq} (tenuto per compatibilità con Sendmail) è possibile visualizzare tutti
   i messaggi in coda. È importante notare che i messaggi che si trovano nella hold queue presentano accanto al Queue ID 
   un punto esclamativo.
   
   \begin{verbatim}
-    [root@localhost postfix]# mailq
+  [root@localhost palfag]# mailq
   -Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
-  9AD9A8D1ED5!   16856 Wed Apr 28 12:44:03  paolo.fagioli@certimeter.it
-                                           palfag33@gmail.com
+  4B5D58E9F44!     638 Fri May 21 11:36:57  paolo.fagioli@certimeter.it
+                                            palfag33@gmail.com
+  
+  -- 0 Kbytes in 1 Request.
   \end{verbatim}
   
+  \newpage
   \subsubsection{Ispezione di un messaggio in coda}
   Per decidere se consentire l'invio o il blocco del messaggio, il postmaster dovrà  esaminarne il contenuto, 
-  quest'azione sarà possibile utilizzando il comando postcat -q Queue ID.
+  quest'azione sarà possibile utilizzando il comando \textit{postcat -q <Queue\_ID>}.
+
+  \begin{verbatim}
+  [root@localhost palfag]# postcat -q 4B5D58E9F44 
+
+  *** MESSAGE CONTENTS hold/4B5D58E9F44 ***
+  Received: from [192.168.8.109] (_gateway [10.0.2.2])
+  by mail.palfag.it (Postfix) with ESMTPSA id 4B5D58E9F44
+  for <palfag33@gmail.com>; Fri, 21 May 2021 11:36:57 +0200 (CEST)
+  User-Agent: Microsoft-MacOutlook/16.49.21050901
+  Date: Fri, 21 May 2021 11:37:09 +0200
+  Subject: Contenuto privato
+  From: Paolo Fagioli <paolo.fagioli@certimeter.it>
+  To: Paolo Fagioli <palfag33@gmail.com>
+  Message-ID: <907A6E2B-235A-43C1-A986-3ACA372BC101@certimeter.it>
+  Thread-Topic: Contenuto privato
+  Mime-version: 1.0
+  Content-type: text/plain;
+  charset="UTF-8"
+  Content-transfer-encoding: 7bit
+
+  Caro Paolo,
+  tutto bene?
+
+  Saluti da me stesso
+  \end{verbatim}
   
   
   \subsubsection{Eliminazione messaggio dalla coda}
-  Per eliminare un messaggio dalla coda si utilizzerà il comando postsuper -d Queue ID per eliminare il messaggio con 
+  Per eliminare un messaggio dalla coda si utilizzerà il comando \textit{postsuper -d <Queue\_ID>} per eliminare il messaggio con 
   ID == Queue ID.
   postsuper -d ALL elimina tutti i messaggi dalla coda.
+
+  \begin{verbatim}
+  [root@localhost palfag]# mailq
+  -Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
+  4B5D58E9F44!     638 Fri May 21 11:36:57  paolo.fagioli@certimeter.it
+                                            palfag33@gmail.com
+  
+  -- 0 Kbytes in 1 Request.
+  [root@localhost palfag]# postsuper -d 4B5D58E9F44 
+  postsuper: 4B5D58E9F44: removed
+  postsuper: Deleted: 1 message
+  [root@localhost palfag]# mailq
+  Mail queue is empty
+  \end{verbatim}
   
   
   \subsubsection{Consenso all'invio di un messaggio}
   I messaggi che finiscono in quarantena, senza l'intervento umano, sono destinati a rimanere nella hold queue per una 
   quantità di tempo indefinita. Se il postmaster decide di lasciar passare il messaggio dovrà utilizzare il comando
-  postsuper -H QueueID. In questo modo il messaggio con id == QueueID lascerà la coda di hold tornano sotto il controllo
-  del gestore delle code, che schedulerà la riconsegna verso la destinazione.
+  \textit{postsuper -H <Queue\_ID>}. In questo modo il messaggio con id == Queue\_ID lascerà la coda di hold tornano sotto il controllo
+  del gestore delle code, che schedulerà la riconsegna verso la destinazione \cite{dent2003postfix}.
+
+  \begin{verbatim}
+[root@localhost palfag]# mailq
+-Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
+F128F8E9F44!    2471 Fri May 21 11:41:23  paolo.fagioli@certimeter.it
+                                         palfag33@gmail.com
+
+-- 2 Kbytes in 1 Request.
+[root@localhost palfag]# postsuper -H 
+ALL          F128F8E9F44  
+[root@localhost palfag]# postsuper -H F128F8E9F44 
+postsuper: F128F8E9F44: released from hold
+postsuper: Released from hold: 1 message
+  \end{verbatim}

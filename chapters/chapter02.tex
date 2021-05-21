@@ -4,7 +4,7 @@
 Con il termine Data Loss Prevention si fa riferimento a 
 tecniche e sistemi in grado di identificare, monitorare 
 e proteggere dati sensibili con l’obiettivo di individuare 
-e prevenire l’uso non autorizzato e la diffusione di informazioni riservate. 
+e prevenire l’uso non autorizzato e la diffusione di informazioni riservate \cite{DLP1}. 
 
 Vi sono diversi tipi di minacce che possono portare ad una perdita di dati.
 La perdita di dati, in un'azienda, può avvenire accidentalmente, per negligenza di un 
@@ -22,11 +22,11 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 \subsection{Cosa fa una soluzione DLP?}
     Una soluzione DLP monitora il traffico dei dati all'interno di un'azienda per accorgersi se
     questi circolano impropriamente. In caso di anomalie, vengono attivate delle azioni di risposta 
-    in modo da bloccare il trasferimento dati non autorizzato e prevenire quindi la loro perdita/diffusione.
-    \cite{OpenLab}
+    in modo da bloccare il trasferimento dati non autorizzato e prevenire quindi la loro perdita/diffusione \cite{DLP2}.
+    
 
 
-\subsection{Tipi di dati monitorati\cite{DLP1}}
+\subsection{Tipi di dati monitorati}
     Abbiamo detto che il dato è di fondamentale importanza e che le soluzioni DLP si occupano di proteggere i dati sensibili.
     È opportuno spiegare cosa s'intende quando si parla di dati sensibili e che tipi di dati vengono monitorati 
     da una soluzione DLP. I dati sensibili sono dati che hanno maggior valore per un'azienda e che possono comportare 
@@ -50,12 +50,12 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             strutturati sono email, immagini, audio, video, file pdf, eccetera. 
     
     Le espressioni regolari non sono adatte per identificare questo tipo di dati. %(possono essere usate per l'estrazione di informazioni strutturate da dati testuali non strutturati), 
-    Per i dati non strutturati si usano tecniche differenti, più sofisticate, che vedremo in seguito. 
+    Per i dati non strutturati si usano tecniche differenti, più sofisticate, che vedremo in seguito \cite{DLP3}.
 
     \subsubsection*{}
     I dati, durante la loro vita, possono trovarsi a riposo, in utilizzo o in transito.
     L'obiettivo della DLP è quello di proteggere i dati nei diversi stati in cui si possono trovare:
-    \cite{SANS1}
+    \cite{DLP1}
 
     \subsubsection{data-at-rest}
         I dati a riposo sono dati al momento inattivi, che sono immagazzinati fisicamente in database,
@@ -85,7 +85,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 \subsection{Identificazione dei dati}
     Vi sono diversi metodi per l'identificazione di dati sensibili, l'utilizzo di una tecnica piuttosto che
     un'altra dipende se il dato è strutturato o meno. Vediamo alcune delle tecniche per identificare
-    dati sensibili:
+    dati sensibili: \cite{DLP4}
     \subsubsection{Pattern matching}
     Questa tecnica si basa sull'utilizzo delle espressioni regolari che hanno come scopo quello
     di identificare pattern prestabiliti. Come detto in precedenza è la tecnica maggiormente 
@@ -130,7 +130,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     
     \subsubsection*{}     
     Essendo prodotti con obiettivi diversi, è consigliato che le aziende utilizzino una soluzione che comprenda entrambi
-    in modo da essere protetta su più fronti.
+    in modo da essere protetta su più fronti \cite{DLP5}.
 
 
 \pagebreak
@@ -138,7 +138,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 La posta elettronica è uno dei servizi Internet più conosciuti e utilizzati assieme alla navigazione web. 
 Rappresenta la controparte digitale ed elettronica della posta ordinaria e cartacea e come tale l’email 
 rappresenta un mezzo di comunicazione asincrono. A differenza del servizio postale ordinario, però, 
-la posta elettronica è gratuita e veloce.\cite{posta}
+la posta elettronica è gratuita e veloce \cite{posta}.
 
 \subsection{Architettura del sistema di posta elettronica}
 Vi sono tre componenti principali che permettono il funzionamento del sistema di posta elettronica:
@@ -153,10 +153,14 @@ Quando il destinatario vuole leggere il messaggio, il suo user agent lo recupera
 Ogni utente ha una casella di posta collocata in un mail server.
 Un tipico viaggio compiuto da un messaggio di posta ha come partenza lo user agent del mittente, 
 giunge al mail server del mittente e prosegue fino al mail server del destinatario. 
-Infine il destinatario utilizzerà uno dei protocolli di accesso alla posta per scaricare e leggere il messaggio.
-\cite{kurose2008reti}
+Infine il destinatario utilizzerà uno dei protocolli di accesso alla posta per scaricare e leggere il messaggio \cite{kurose2008reti}.
 
-** inserire foto architettura **
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=12cm, height=20cm, keepaspectratio]{architettura_posta.jpg}
+        \caption{Architettura della posta elettronica\cite{kurose2008reti}.}\label{architetturaPosta}
+  \end{figure}
+
 
 \subsection{Protocollo SMTP}
 Il protocollo SMTP rappresenta il principale protocollo a livello applicativo per la posta elettronica. 
@@ -175,7 +179,7 @@ informazioni. Dopo la reciproca presentazione il client invia il messaggio.
 Dato che SMTP utilizza connessioni persistenti, se un client ha più messaggi da inviare al server, 
 può utilizzare la stessa connessione TCP per inviarli tutti. Una volta terminato di inviare tutti i messaggi, 
 il client ordina a TCP di chiudere la connessione.
-Di seguito un esempio di comunicazione SMTP:\cite{SMTP}
+Di seguito un esempio di comunicazione SMTP:
 
 \begin{verbatim}
     S: 220 smtp.example.com ESMTP Postfix
@@ -197,7 +201,7 @@ Di seguito un esempio di comunicazione SMTP:\cite{SMTP}
     S: 250 Ok: queued as 12345
         C: QUIT
     S: 221 Bye
-\end{verbatim}
+\end{verbatim}\cite{SMTP}.
 
 \subsection{Protocolli di accesso alla posta: POP3, IMAP, HTTP}
 Come detto precedentemente SMTP è un protocollo di tipo push, utilizzato per l’invio di posta elettronica. 
