@@ -18,7 +18,7 @@ port-forwarding. È necessario dunque configurare la VM per l'utilizzo del NAT e
 per la traduzione della porta.
 Le macchine si collegheranno all'indirizzo IP dell'Host utilizzando la porta Host Port configurata
 per il forwarding e le connessioni verranno inoltrate da VirtualBox al Guest.
-Nel nostro caso di utilizzo la VM gestisce un mail server configurato per l'ascolto sulle porte 25, 465 e
+A scopi progettuali la VM gestirà un mail server configurato per l'ascolto sulle porte 25, 465 e
 587. Inoltre sono presenti anche altre due traduzioni per rendere raggiungibile un ipotetico web server e rendere possibile
 la connessione SSH verso la macchina virtuale.
 
@@ -41,8 +41,8 @@ la connessione SSH verso la macchina virtuale.
 
 \subsection{Apertura porte del firewall}
 
-Il secondo passo consiste nell’aprire le porte del firewall, che ci servono, in modo tale che le connessioni 
-possano raggiungere il Guest. Questo è possibile attraverso i comandi:
+Il secondo passo consiste nell’aprire le porte del firewall, necessarie per il funzionamento del progetto, 
+in modo tale che le connessioni possano raggiungere il Guest. Questo è possibile attraverso i comandi:
 
 \begin{verbatim}
     firewall-cmd --zone=public --permanent --add-port 587/tcp
@@ -58,7 +58,7 @@ A questo punto sarà necessario effettuare un reload:
     firewall-cmd --reload
 \end{verbatim}
 
-Possiamo verificare che le porte siano state aperte correttamente attraverso il comando:
+Si può verificare che le porte siano state aperte correttamente attraverso il comando:
 \begin{verbatim}
 [root@localhost palfag]# firewall-cmd --list-all
 public (active)
@@ -94,7 +94,7 @@ server DHCP del router. In questo modo non sarà necessario modificare le impost
 installati sulle altre macchine, ogni volta che il server cambia IP.
 Per la prenotazione di un indirizzo IP, si dovrà accedere nella pagina di configurazione del router, 
 accessibile attraverso il browser, digitando l’indirizzo IP del router nella barra di ricerca 
-(nel mio caso 192.168.8.1). Fatto ciò, dovremo accedere alle impostazioni avanzate e cliccare sulla voce DHCP. 
+(in questo caso 192.168.8.1). Fatto ciò, si dovrà accedere alle impostazioni avanzate e cliccare sulla voce DHCP. 
 A questo punto sarà necessario inserire una riga di traduzione associando il MAC (indirizzo di livello 2), 
 del dispositivo interessato, all’indirizzo IP che vogliamo che ottenga ogni volta che ne richieda uno al server DHCP.
 
@@ -185,7 +185,7 @@ certificato e chiave poiché saranno necessari successivamente per la configuraz
 \begin{verbatim}
     yum install postfix mailx cyrus-sasl cyrus-sasl-plain
 \end{verbatim}
-2. Creare un file, nel mio caso che ho chiamato \textit{sasl\_passwd} dove andremo a mettere le credenziali
+2. Creare un file, in questo caso è stato chiamato \textit{sasl\_passwd} dove saranno inserite le credenziali
 necessarie per l'autenticazione presso il server Aruba:
 
 \begin{verbatim}
@@ -232,7 +232,7 @@ in questo momento saranno necessari i certificato e chiave generati precedenteme
 \begin{verbatim}
     systemctl start postfix.service
 \end{verbatim}
-7. A questo punto possiamo verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
+7. A questo punto sarà possibile verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
 provando ad inviare una email da terminale:
 
 \begin{verbatim}
@@ -316,7 +316,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{tabular}%
     \end{table}
 
-    Ricordiamo che la porta 5555 inserita è una porta effimera che successivamente verrà tradotta nella porta 587
+    Si ricorda che la porta 5555 inserita è una porta effimera che successivamente verrà tradotta nella porta 587
     dal NAT di VirtualBox.
     Selezionare la spunta ``Usa SSL per connetterti'', a questo punto dovremmo trovarci nella stessa situazione
     della figura \ref{confOutlook}.
@@ -340,11 +340,11 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{figure}  
 
     In realtà in azienda ci sarà un server DNS con il compito di tradurre il dominio in indirizzo IP, 
-    e non sarebbe più necessario modificare il file \textbf{/private/etc/hosts} per ogni macchina aziendale.
+    e non sarebbe più necessario modificare il file \textit{/private/etc/hosts} per ogni macchina aziendale.
 
 
     A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
-    Ci dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
+    Dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
     Sarà necessario istruire il nostro computer di fidarsi sempre del certificato
     (anche in questo caso in azienda non ci sarebbe bisogno di effettuare questo passaggio, poiché 
     il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
@@ -387,7 +387,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     (From:, To:, Subject:, ecc\dots), body\_checks si occuperà di effettuare filtri sul corpo del messaggio e
     infine mime\_header\_checks si occuperà degli allegati. È importante notare che il controllo degli allegati
     nativo in Postfix permette soltanto di filtrare in base al nome del file e all'estensione. Successivamente 
-    verrà sviluppato un filtro esterno più completo per l'analisi del contenuto dei file.
+    verrà sviluppato un filtro esterno più completo per l'analisi del contenuto degli allegati.
 
     Una volta creati i file, sarà necessario aggiungere al file \textit{/etc/postfix/main.cf} le seguenti tre righe:
 
@@ -402,17 +402,17 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     diverse per filtrare ad esempio oggetto e corpo del messaggio.
 
     \section{Sviluppo di filtri interni}
-    In questo capitolo provvederemo allo sviluppo di una serie di filtri per fare in modo che Postfix possa 
+    In questo capitolo si provvederà allo sviluppo di una serie di filtri per fare in modo che Postfix possa 
     rilevare eventuali email da bloccare così da prevenire eventuali perdite di dati. 
-    Ci serviremo delle espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato possiamo 
-    poi decidere in che modo vogliamo che si comporti Postfix al verificarsi dell’evento, 
+    Saranno utilizzate le espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato è possibile 
+    decidere in che modo si vuole si comporti Postfix al verificarsi dell’evento, 
     ovvero quando rileva in un’ email un contenuto identificato sensibile, oppure quando riceve un’email da un 
     mittente inserito in una blacklist.
-    I controlli hanno la seguente struttura: “se trovi questo allora fai quello”, 
-    infatti nella prima parte inseriremo il contenuto da rilevare e nella seconda specificheremo l’azione di 
-    risposta da intraprendere.
+    I controlli hanno la seguente struttura: “se questo, allora quello”, 
+    infatti nella prima parte verrà inserito il pattern del contenuto da rilevare e nella seconda verrà 
+    specificata l’azione di risposta da intraprendere.
 
-    Incominceremo dividendo i filtri da sviluppare in due macro-aree:
+    Si divideranno i filtri da sviluppare in due macro-aree:
 
     \begin{enumerate}
         \item Analisi del contenuto;
@@ -423,15 +423,15 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     Questi tipo di controlli si occuperanno del filtraggio del contenuto dell'email, 
     andando a ispezionare oggetto, corpo del messaggio ed eventuali allegati. 
     
-    Utilizzeremo le espressioni regolari per individuare e bloccare messaggi di posta che contengono metodi di 
+    Saranno utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono metodi di 
     pagamento (ad esempio Carte VISA), o permetterne l’invio eliminando il contenuto sensibile. 
     
     Importante ricordare che Postfix effettua il controllo riga per riga, quindi se viene identificato un 
-    contenuto sensibile, e come azione di risposta decidessimo di eliminarlo e procedere all’invio, 
+    contenuto sensibile, e come azione di risposta si scegliesse IGNORE, 
     l’intera riga sarà eliminata (questo potrebbe compromettere l’integrità/significato originale del messaggio). 
     
-    Inseriremo dei controlli sull’oggetto inserendo parole chiave che, se presenti, 
-    potranno portare al blocco dell’invio o alla quarantena del messaggio. Per gli allegati invece potremmo 
+    Saranno inseriti dei controlli sull’oggetto inserendo parole chiave che, se presenti, 
+    potranno portare al blocco dell’invio o alla quarantena del messaggio. Per gli allegati invece è possibile, nativamente,
     effettuare controlli esclusivamente sul filename o sull’estensione. 
 
     \subsubsection{Controlli sull'oggetto (file header\_checks):}
@@ -482,9 +482,9 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \subsection{Analisi del contesto}
     In quest’area i controlli tratteranno il contesto e quindi andranno a focalizzarsi sulle restanti 
-    informazioni che compongono l’email. Effettueremo, ad esempio, controlli per filtrare in base al 
+    informazioni che compongono l’email. Saranno creati, ad esempio, controlli per filtrare in base al 
     mittente del messaggio o del destinatario. 
-    Bloccheremo l’invio delle email aziendali per un preciso dominio e potremo fare in modo che postfix 
+    Verrà bloccato l’invio delle email aziendali per un preciso dominio e si potrà decidere che Postfix 
     non accetti email che provengono da un account di posta elettronica diverso da quello aziendale 
     (nome.cognome@certimeter.it). 
 
@@ -500,7 +500,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{verbatim}
 
     \subsubsection{Blocco delle email indirizzate ad un certo dominio:}
-    Possiamo supporre ad esempio che da policy aziendali sia vietato, per i dipendenti, 
+    Si può supporre ad esempio che da policy aziendali sia vietato, per i dipendenti, 
     inviare email al dominio reply.it In questo caso verrà inserito il seguente filtro:
 
     \begin{verbatim}
@@ -518,17 +518,17 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \section{Script Python esterno per la gestione degli allegati}
     Il filtraggio dei contenuti di Postfix è abbastanza limitato, poiché non permette di analizzare il contenuto
-    degli allegati. Postfix però prevede la possibilità di utilizzare dei plug-in esterni. Per questo motivo ho 
+    degli allegati. Postfix però prevede la possibilità di utilizzare dei plug-in esterni. Per questo motivo è stato
     sviluppato uno script Python che permettesse l'analisi e l'identificazione di contenuti sensibili presenti 
     negli allegati.
 
 
     \section{Shell code}
-    Nel suo sito ufficiale Postfix offre uno script bash di esempio che possiamo personalizzare per il nostro 
-    obiettivo. Lo script avrà la funzione di mediatore tra Postfix e Python. 
+    Nel suo sito ufficiale Postfix offre uno script bash di esempio che è possibile personalizzare per  
+    raggiungere l'obiettivo. Lo script avrà la funzione di mediatore tra Postfix e Python. 
     In ingresso gira la email, che Postfix consegna allo script wrapper.sh, allo script Python 
     il cui compito è quello di analizzarla.
-    In base al valore di uscita dello script Python, il nostro wrapper.sh si comporterà in due modi:
+    In base al valore di uscita dello script Python, wrapper.sh si comporterà in due modi:
 
     
     \begin{enumerate}
@@ -572,7 +572,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \section{Integrazione script esterno}
     Per fare in modo che venga eseguito il filtro esterno, sarà necessario configurare Postfix in modo
-    che consegni l'email al mio script.
+    che consegni l'email allo script.
     
     1. Prima di tutto sarà necessario aggiungere nel file \textit{/etc/postfix/master.cf} il filtro:
 
@@ -586,9 +586,9 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 	    flags=Rq user=filter 
         argv=/home/filter/wrapper.sh -f ${sender} -- ${recipient}
     \end{verbatim}
-    In questo modo abbiamo registrato il filtro chiamato ``my\_filter''.
+    In questo è stato registrato il filtro chiamato ``my\_filter''.
     
-    2. Adesso dobbiamo dire a Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
+    2. Adesso bisogna istruire Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
 
     \begin{verbatim}
         /etc/postfix/master.cf:

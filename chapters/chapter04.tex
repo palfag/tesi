@@ -198,7 +198,7 @@
 
         \pagebreak
         \subsection{Dipendenze tra requisiti}
-        Di seguito ho stilato un elenco delle dipendenze formatesi tra i requisiti.
+        Di seguito è stilato un elenco delle dipendenze formatesi tra i requisiti.
         La nomenclatura utilizzata è la seguente:
         \begin{flushleft}
           x -> y: il requisito x dipende dal requisito y
@@ -241,7 +241,7 @@
 
 \section{Disegno dell'architettura}
 
-  Per la progettazione della soluzione inseriremo la nostra soluzione DLP
+  Per la progettazione della soluzione verrà inserita la soluzione DLP
   tra il mail client (Outlook) e il mail server aziendale (Aruba). La soluzione DLP deciderà se lasciar 
   passare l' email verso il mail server aziendale, oppure bloccarne l'invio.
   \begin{figure}[htp]
@@ -260,7 +260,7 @@
     \caption{soluzione DLP attraverso mail server di relay}\label{disegno2}
   \end{figure}
 
-  Come ultimo passo andremo a considerare una sottorete composta dagli host dei dipendenti dell'azienda, al
+  Come ultimo passo si andrà a considerare una sottorete composta dagli host dei dipendenti dell'azienda, al
   posto di un unico client. Questa è la configurazione che più rispecchia la realtà.
 
   \begin{figure}[htp]
@@ -270,7 +270,7 @@
   \end{figure}
 
   \subsection{Descrizione del flusso di dati e di controllo}
-  Come mostrato dalla figure \ref{disegno2} e \ref{disegno3}, Quando un dipendente invia una email, questa
+  Come mostrato dalle figure \ref{disegno2} e \ref{disegno3}, Quando un dipendente invia una email, questa
   passerà dal relay mail server che deciderà se bloccarla, oppure inoltrarla al mail server aziendale. L'email
   continuerà il suo cammino fino ad arrivare al mail server del destinatario. A quel punto potrà essere scaricata
   dal mail client del destinatario.
