@@ -16,35 +16,38 @@
   suo predecessore.
   A differenza dei prodotti DLP trattati nel capitolo 3, sia Sendmail che Postfix sono software open source e
   quindi rappresentano un'ottima soluzione per lo sviluppo di questo progetto.
-  Nel prossimo paragrafo saranno trattate un'introduzione su Postfix e sulla sua architettura. Per ulteriori
+  Nel prossimo paragrafo sarà presentata un'introduzione su Postfix e sulla sua architettura. Per ulteriori
   informazioni è possibile consultare il sito ufficiale al seguente indirizzo: \url{http://www.postfix.org/}
    
   \pagebreak
   \section{Introduzione di Postfix}
-  Postfix è un MTA (mail server) che trasporta messaggi di posta elettronica da un MUA (mail client) verso un server remoto o in locale. Per lo sviluppo della soluzione DLP utilizzeremo come MUA ufficiale Outlook, poiché è il mail client utilizzato in azienda e configureremo Postifix come mail server di inoltro, in modo che inoltri le email verso il server di posta elettronica aziendale Aruba. Una delle funzionalità particolarmente interessanti che offre Postfix è quella di effettuare un’analisi sul contenuto delle email (vedremo durante la fase di implementazione come configurare il controllo dei contenuti e come sviluppare dei filtri).
+  Postfix è un MTA (mail server) che trasporta messaggi di posta elettronica da un MUA (mail client) verso un server remoto o in locale. Per lo sviluppo della soluzione DLP sarà utilizzato come MUA ufficiale Outlook, poiché è il mail client utilizzato in azienda e configureremo Postifix come mail server di inoltro, in modo che inoltri le email verso il server di posta elettronica aziendale Aruba. Una delle funzionalità particolarmente interessanti che offre Postfix è quella di effettuare un’analisi sul contenuto delle email (durante la fase di implementazione verrà illustrato come configurare il controllo dei contenuti e come sviluppare dei filtri).
   
   \subsection{Architettura di Postfix}
-  Il vantaggio principale che ha portato Postfix a diventare l’erede di Sendmail, oltre la compatibilità, è la sicurezza. Postfix è stato progettato in modo da essere dotato di un’architettura modulare. È composto da diversi demoni, ognuno dei quali svolge un preciso compito ed esegue con i privilegi minimi necessari per portarlo a termine. Il  master è l’unico processo che esegue con i privilegi di root e rimane sempre attivo. La funzione principale del master è quella di gestire tutti gli altri processi. I processi non hanno nessun legame di parentela con i processi utente, quindi sono immuni da vulnerabilità che coinvolgono la relazione padre-figlio. Per questo motivo Postfix non è vulnerabile da attacchi che sfruttano l’interprocess communication, come ad esempio l’invio di segnali o l’utilizzo della memoria condivisa. Postfix è immune anche da attacchi di tipo Buffer Overflow. In caso di mancanza di risorse è progettato per rallentare i suoi compiti, facendosi da parte in modo che il sistema si possa riprendere, rendendo meno efficienti gli attacchi DOS nei suoi confronti.
+  Il vantaggio principale che ha portato Postfix a diventare l’erede di Sendmail, oltre la compatibilità, è la sicurezza. Postfix è stato progettato in modo da essere dotato di un’architettura modulare. È composto da diversi demoni, ognuno dei quali svolge un preciso compito ed esegue con i privilegi minimi necessari per portarlo a termine. Il  master è l’unico processo che esegue con i privilegi di root e rimane sempre attivo. La funzione principale del master è quella di gestire tutti gli altri processi. I processi non hanno legami di parentela con i processi utente, quindi sono immuni da vulnerabilità che coinvolgono la relazione padre-figlio. Per questo motivo Postfix non è vulnerabile da attacchi che sfruttano l’interprocess communication, come ad esempio l’invio di segnali o l’utilizzo della memoria condivisa. Postfix è immune anche da attacchi di tipo Buffer Overflow. In caso di mancanza di risorse è progettato per rallentare i suoi compiti, facendosi da parte in modo che il sistema si possa riprendere, rendendo meno efficienti gli attacchi DOS nei suoi confronti.
   
   La ricezione dei messaggi può avvenire in due modi: localmente, oppure tramite la rete \cite{hildebrandt2005book}.
   
   \subsection{Ricezione locale dei messaggi}
-  La ricezione locale di email può avvenire ad esempio quando si invia un messaggio da terminale (dallo stesso host che ospita il server Postfix) utilizzando il programma sendmail. 
+  La ricezione locale di email può avvenire ad esempio quando si invia un messaggio da terminale (dallo stesso host che ospita il server Postfix) utilizzando il comando sendmail. 
   
-  I messaggi locali sono depositati nella cartella maildrop dal comando postdrop di Postfix. Postdrop non fa altro che creare un file all’interno della cartella maildrop copiandone all’interno l’input passato al comando (stdin, che corrisponde alla nostra email inviata localmente). 
+  I messaggi locali sono depositati nella cartella maildrop dal comando postdrop di Postfix. Postdrop non fa altro che creare un file all’interno della cartella maildrop copiandone all’interno l’input passato al comando (stdin, che corrisponde all'email inviata localmente). 
   
   Il demone pickup a questo punto preleva il messaggio dalla cartella (coda) maildrop e lo invia al demone cleanup. Questo è il demone incaricato di effettuare i controlli sul contenuto che come già detto verranno esposti nel capitolo 6. Una volta che l’email ha superato i controlli, questa finirà nella coda dei messaggi in arrivo e cleanup avviserà il gestore delle code (qmgr). 
-  Nel nostro caso, poiché Postfix sarà configurato come relay mail server, qmgr contatterà smtp per inviare il messaggio al next-hop. In caso si dovesse consegnare il messaggio localmente verrebbe contattato local e nel caso lo si passasse ad un comando pipe \cite{Postfix2}.
+  In questo caso, poiché Postfix sarà configurato come relay mail server, qmgr contatterà smtp per inviare il messaggio al next-hop. In caso si dovesse consegnare il messaggio localmente verrebbe contattato local e nel caso lo si passasse ad un comando pipe \cite{Postfix2}.
   
   \subsection{Ricezione dei messaggi attraverso la rete}
   I messaggi ricevuti dalla rete sono accettati dal demone smtpd. Una volta ricevuto il messaggio, smtpd provvederà a consegnarlo a cleanup e da quel momento la strada percorsa sarà la stessa di quella effettuata dalle email ricevute in locale.
-  Di base la nostra configurazione utilizza questa opzione considerando che il mail server si trova all'interno della rete aziendale e deve accettare email dagli host dei dipendenti connessi alla rete.
+  Di base, per lo sviluppo della soluzione DLP, la configurazione utilizza una variante di questa opzione, considerando che il mail server si trova all'interno della rete aziendale e deve accettare email dagli host dei dipendenti connessi alla rete.
+  Per via dell'integrazione dello script esterno, i messaggi ricevuti dalla rete verranno passati al demone pipe per essere consegnati allo script ed esaminati.
+  Se non vengono trovati dati sensibili, viene utilizzato il comando sendmail per riconsegnare il messaggio a Postfix. Una volta fatto questo,
+  il messaggio si comporterà come nel caso della ricezione locale dei messaggi, perché di fatto Postfix lo ha ricevuto in locale.
   
   \subsection{Rifiuto di un messaggio}
   Se postfix dovesse decidere di rifiutare il messaggio, ad esempio perché vengono identificati dati sensibili, il demone bounce provvederà ad avvisare il mittente includendo opzionalmente una motivazione del perché non è stato possibile accettare e quindi consegnare il messaggio.
   
   \section{Utilizzo di Postfix come soluzione DLP}
-  In questo paragrafo citeremo in causa i requisiti scoperti durante la fase di analisi e vedremo come
+  In questo paragrafo verranno citati in causa i requisiti scoperti durante la fase di analisi e si scoprirà come
   possono essere soddisfatti attraverso l'utilizzo di Postfix. In particolare la tabella
   \ref{PostfixDLP} stila un elenco dei requisiti nella colonna di sinistra, mentre alla destra di ognuno viene illustrato
   cosa offre Postfix per poterlo soddisfare.
@@ -63,7 +66,7 @@
       \textbf{1. Monitoraggio traffico email} &
         \begin{tabular}[c]{@{}l@{}}Poiché si utilizza un mail server di relay,\\ questo requisito risulta soddisfatto.\end{tabular} \\ \hline
       \textbf{2. Analisi del contenuto} &
-        \begin{tabular}[c]{@{}l@{}}Postfix permette di analizzare:\\ - l'oggetto del messaggio;\\ - il corpo del messaggio;\\ - l'allegato di un messaggio;\\ \\ l'analisi avviene mediante l'utilizzo di \\ espressioni regolari.\\ Postfix non offre la possibilità di \\ analizzare il contenuto di un allegato, ma \\ permette di applicare delle regole per \\ filtrare in base al nome del file e al tipo.\end{tabular} \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Postfix permette di analizzare:\\ - l'oggetto del messaggio;\\ - il corpo del messaggio;\\ - l'allegato di un messaggio;\\ \\ l'analisi avviene mediante l'utilizzo di \\ espressioni regolari.\\ Postfix non offre la possibilità di \\ analizzare il contenuto di un allegato, ma \\ permette di applicare delle regole per \\ filtrare in base al filename e all'estensione.\end{tabular} \\ \hline
       \rowcolor[HTML]{EFEFEF} 
       \textbf{3. Analisi del contesto} &
         \begin{tabular}[c]{@{}l@{}}È possibile effettuare un'analisi degli\\ header del messaggio. Sarà possibile\\ effettuare delle restrizioni in base al\\ mittente e destinatario o in base ad un \\ dominio.\\ \\ alcuni header d'interesse: \\ - FROM:\\ - TO:\end{tabular} \\ \hline
@@ -73,7 +76,7 @@
       \textbf{5. Intraprendere azioni di risposta} &
         \begin{tabular}[c]{@{}l@{}}Azioni di risposta offerte da Postfix:\\ 1. REJECT;\\ 2. IGNORE;\\ 3. WARN;\\ 4. HOLD;\\ 5. DISCARD;\\ 6. FILTER;\\ 7. REDIRECT.\\ \\ Nel prossimo paragrafo verrà spiegato il \\ funzionamento di ogni voce citata.\end{tabular} \\ \hline
       \textbf{6. Avviso in caso di blocco} &
-        \begin{tabular}[c]{@{}l@{}}Nel caso in cui un messaggio di posta \\ non dovesse essere accettato da Postfix\\ (per mezzo della clausola REJECT), \\ verrà notificato il MUA del mittente.\end{tabular} \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Nel caso in cui un messaggio di posta \\ non dovesse essere accettato da Postfix\\ (per mezzo della clausola REJECT), \\ verrà notificato il mittente.\end{tabular} \\ \hline
       \end{tabular}%
       }
       \caption{Utilizzo di Postfix come soluzione DLP}\label{PostfixDLP}
@@ -138,7 +141,7 @@
     \end{itemize}
   \end{table}
   
-  Tutti i messaggi in ingresso e in uscita passano attraverso qmgr. Ai fini di questo progetto ci focalizzeremo
+  Tutti i messaggi in ingresso e in uscita passano attraverso qmgr. Ai fini di questo progetto il focus riverserà
   sulla coda di hold, quella dove si trovano i messaggi bloccati in quarantena.
   
   Postfix mette a disposizione dei comandi per permettere al postmaster, manualmente, di gestire i messaggi che si 

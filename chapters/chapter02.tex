@@ -135,100 +135,10 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 
 \pagebreak
 \section{Posta elettronica}
-La posta elettronica è uno dei servizi Internet più conosciuti e utilizzati assieme alla navigazione web. 
-Rappresenta la controparte digitale ed elettronica della posta ordinaria e cartacea e come tale l’email 
-rappresenta un mezzo di comunicazione asincrono. A differenza del servizio postale ordinario, però, 
-la posta elettronica è gratuita e veloce \cite{posta}.
-
-\subsection{Architettura del sistema di posta elettronica}
-Vi sono tre componenti principali che permettono il funzionamento del sistema di posta elettronica:
-\begin{itemize}
-    \item mail user agent (MUA)
-    \item mail server
-    \item protocollo SMTP
-\end{itemize}
-Gli user agent consentono agli utenti di leggere, comporre, rispondere, inoltrare messaggi. 
-Quando il mittente ha concluso di comporre il messaggio, il suo user agent lo invia al server di posta del mittente. 
-Quando il destinatario vuole leggere il messaggio, il suo user agent lo recupera dalla casella di posta nel suo mail server. 
-Ogni utente ha una casella di posta collocata in un mail server.
-Un tipico viaggio compiuto da un messaggio di posta ha come partenza lo user agent del mittente, 
-giunge al mail server del mittente e prosegue fino al mail server del destinatario. 
-Infine il destinatario utilizzerà uno dei protocolli di accesso alla posta per scaricare e leggere il messaggio \cite{kurose2008reti}.
-
-\begin{figure}[htp]
-    \centering
-    \includegraphics[width=12cm, height=20cm, keepaspectratio]{architettura_posta.jpg}
-        \caption{Architettura della posta elettronica\cite{kurose2008reti}.}\label{architetturaPosta}
-  \end{figure}
-
-
-\subsection{Protocollo SMTP}
-Il protocollo SMTP rappresenta il principale protocollo a livello applicativo per la posta elettronica. 
-Fa uso del protocollo di trasporto TCP così da sfruttare il servizio di trasferimento dati affidabile. 
-SMTP presenta un lato client e un lato server. Ogni server può eseguire entrambi i lati. 
-Quando un server invia un messaggio di posta agisce come un client SMTP, mentre quando lo riceve si comporta 
-da server SMTP.
-SMTP trasferisce i messaggi di posta dal mail server del mittente al mail server del destinatario. 
-Il protocollo SMTP di solito non utilizza mail server intermedi per inviare posta, anche quando i server finali 
-sono collocati agli angoli opposti del mondo.
-SMTP è un protocollo di tipo push, poiché la connessione TCP viene aperta dall’host che vuole inviare il messaggio. 
-Il protocollo SMTP è simile ai protocolli umani utilizzati per la comunicazione. 
-Prima di tutto il client SMTP apre una connessione TCP sulla porta 25 verso il server SMTP. 
-Una volta stabilita la connessione client e server effettuano una sorta di presentazione prima di scambiarsi 
-informazioni. Dopo la reciproca presentazione il client invia il messaggio.
-Dato che SMTP utilizza connessioni persistenti, se un client ha più messaggi da inviare al server, 
-può utilizzare la stessa connessione TCP per inviarli tutti. Una volta terminato di inviare tutti i messaggi, 
-il client ordina a TCP di chiudere la connessione.
-Di seguito un esempio di comunicazione SMTP:
-
-\begin{verbatim}
-    S: 220 smtp.example.com ESMTP Postfix
-    C: HELO relay.example.com
-    S: 250 smtp.example.com
-    C: MAIL FROM: <bob@example.com>
-    S: 250 OK
-    C: RCPT TO: <alice@example.com>
-    S: 250 OK
-    C: DATA
-    S: 354 End data with <CR><LF>.<CR><LF>
-    C: From: "Bob" <bob@example.com>
-    C: To: "Alice" <alice@example.com>
-    C: Date: Tue, 15 January 2008 16:02:43 -0500
-    C: Subject: Messaggio di prova
-    C: 
-    C: Ciao, questo è un messaggio di prova
-    C: .
-    S: 250 Ok: queued as 12345
-        C: QUIT
-    S: 221 Bye
-\end{verbatim}\cite{SMTP}.
-
-\subsection{Protocolli di accesso alla posta: POP3, IMAP, HTTP}
-Come detto precedentemente SMTP è un protocollo di tipo push, utilizzato per l’invio di posta elettronica. 
-Quindi l’user agent di un destinatario non potrà utilizzare questo protocollo per scaricare la posta dal suo mail 
-server. Per compiere questa operazione è necessario utilizzare dei protocolli di tipo pull. 
-Nei protocolli di tipo pull, la connessione TCP viene aperta da chi vuole ricevere i dati.
-L’user agent di un destinatario di posta utilizzerà principalmente IMAP per scaricare la posta in locale dal suo mail server 
-(POP3 ha delle limitazioni, quindi non è più molto utilizzato). 
-Molte persone però accedono alla posta elettronica utilizzando il browser, in questo caso il protocollo utilizzato 
-per scaricare i messaggi di posta è HTTP.
-
-\subsection{Protocolli crittografici TLS/SSL}
-SSL (secure sockets layer) permette di rendere sicuro TCP,  fornendogli servizi di sicurezza, 
-comprese la riservatezza, l’integrità dei dati e l’autenticazione del server. 
-Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).\cite{tls}
-
-\begin{enumerate}
-    \item \textbf{riservatezza}: il traffico viaggia cifrato;
-    \item \textbf{integrità dei dati}: se non venisse assicurata l'integrità dei dati, un soggetto terzo
-    potrebbe modificare il messaggio;
-    \item \textbf{autenticazione da parte del server}: L'autenticazione TLS è unilaterale, solo il server si 
-    autentica presso il client. Il mail client valida il certificato del server, controllando che la firma dei 
-    certificati del server sia valida e riconosciuta da una certificate authority.
-    In questo modo il mail client è sicuro dell'autenticità del mail server. 
-    %Per questo motivo Postfix ha bisogno di un certificato da mostrare ai mail client.
-\end{enumerate}
-
+La posta elettronica è uno dei servizi Internet più utilizzati in tutto il mondo\cite{posta}. Attraverso di essa
+È possibile scambiare messaggi attraverso la rete in modo facile, veloce e soprattutto gratuito. 
+I messaggi scambiati possono consistere in semplice testo (oggetto e corpo), 
+oppure includere anche uno o più allegati.
 
 \subsection{Formato dei messaggi di posta elettronica}
 Un messaggio di posta elettronica contiene una serie di righe di intestazione (header).
@@ -254,3 +164,102 @@ Di seguito un esempio di messaggio di posta:
 
     Paolo Fagioli
 \end{verbatim}
+
+\subsection{Architettura del sistema di posta elettronica}
+La posta elettronica è basata su un'architettura client-server. 
+Sia lato mittente che lato ricevente, viene utilizzata un'applicazione, lo user agent, per rispettivamente 
+comporre ed inviare, e leggere i messaggi ricevuti. 
+Alcuni esempi di user agent sono Microsoft Outlook, utilizzato per lo sviluppo della soluzione DLP, 
+e Mozilla Thunderbird.
+Un altro componente fondamentale per il funzionamento della posta elettronica è il mail server. 
+Un mail server svolge principalmente due funzioni:
+
+\begin{enumerate}
+    \item salva il messaggio nella casella di posta dell'utente (è importante sapere che ogni utente ha una casella di posta salvata in un qualche mail server);
+    \item inoltra i messaggi di posta verso un altro mail server.
+\end{enumerate}
+
+Il protocollo principale utilizzato per lo scambio di messaggi di posta elettronica è SMTP, 
+che verrà affrontato nel prossimo paragrafo.
+Un ottimo modo per comprendere il funzionamento della posta elettronica è attraverso un esempio.
+Supponiamo che Alice (alice@certimeter.it) voglia inviare un messaggio a Bob (bob@reply.it).
+
+Alice avrà composto il messaggio utilizzando ad esempio Outlook, e lo invierà al proprio mail server 
+sfruttando il protocollo SMTP. Una volta ricevuto il messaggio, il mail server di Alice si incaricherà di 
+inoltrare quest'ultimo verso il server di posta di Bob (generalmente non sono utilizzati server di posta intermedi, 
+ma le connessioni avvengono direttamente tra i server di posta finali). 
+Una volta ricevuta l'email, il server di posta di Bob la immagazzinerà nella sua casella di posta. 
+Successivamente quando Bob controllerà la sua mail, il messaggio di posta verrà scaricato dall'user agent 
+utilizzato da Bob, ipotizziamo Thunderbird, rendendolo disponibile alla sua vista\cite{kurose2008reti}.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=12cm, height=20cm, keepaspectratio]{architettura_posta.jpg}
+        \caption{Architettura della posta elettronica\cite{kurose2008reti}.}\label{architetturaPosta}
+  \end{figure}
+
+
+\subsection{Protocollo SMTP}
+Come già detto il protocollo SMTP è il principale protocollo utilizzato per la posta elettronica.
+SMTP è un protocollo di livello applicativo e utilizza come protocollo di livello di trasporto TCP,
+che offre il servizio di consegna dati affidabile. 
+L'utilizzo di TCP è principalmente motivato dal fatto che la posta elettronica è un servizio asincrono, 
+e non in tempo reale, per questo motivo tollerante a ritardi, mentre non può tollerare errori di trasmissione 
+che potrebbero comportare l'alterazione/corruzione del messaggio. 
+È utilizzato principalmente per lo scambio tra user agent del mittente e mail server del mittente, e tra mail server 
+in generale. È un protocollo di tipo push, e questo significa che la connessione viene aperta da chi vuole 
+trasferire i dati, ovvero da chi vuole inviare il messaggio. Dato che SMTP utilizza connessioni persistenti, 
+se Alice dovesse inviare a Bob più messaggi di posta, potrebbe inviarli sulla stessa connessione TCP e 
+infine chiuderla.
+Di seguito un esempio di comunicazione SMTP:
+
+\begin{verbatim}
+    S: 220 smtp.reply.it ESMTP Postfix
+    C: HELO smtp.aruba.it
+    S: 250 smtp.reply.it
+    C: MAIL FROM: <alice@certimeter.it>
+    S: 250 OK
+    C: RCPT TO: <bob@reply.it>
+    S: 250 OK
+    C: DATA
+    S: 354 End data with <CR><LF>.<CR><LF>
+    C: From: "Alice" <alice@certimeter.it>
+    C: To: "Bob" <bob@reply.it>
+    C: Date: Tue, 15 May 2021 16:02:43 -0500
+    C: Subject: Messaggio di prova
+    C: 
+    C: Ciao, questo è un messaggio di prova
+    C: .
+    S: 250 Ok: queued as 12345
+        C: QUIT
+    S: 221 Bye
+\end{verbatim}\cite{SMTP}.
+
+\subsection{Protocolli di accesso alla posta: POP3, IMAP, HTTP}
+Come detto precedentemente SMTP è un protocollo di tipo push, 
+utilizzato per l’invio di posta elettronica. L’user agent di un destinatario non potrà utilizzare questo 
+protocollo per scaricare la posta dal suo mail server. 
+Per compiere questa operazione è necessario utilizzare dei protocolli di tipo pull. 
+Nei protocolli di tipo pull, la connessione TCP viene aperta da chi vuole ricevere i dati. 
+L’user agent di un destinatario di posta utilizzerà principalmente IMAP per scaricare la posta in locale 
+dal suo mail server (POP3 ha delle limitazioni). 
+Molte persone però accedono alla posta elettronica utilizzando il proprio browser (es. Mozilla Firefox), 
+in questo caso il protocollo utilizzato per scaricare i messaggi di posta è HTTP.
+
+\subsection{Protocolli crittografici TLS/SSL}
+SSL (secure sockets layer) permette di rendere sicuro TCP,  fornendogli servizi di sicurezza, 
+comprese la riservatezza, l’integrità dei dati e l’autenticazione del server. 
+Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).\cite{tls}
+
+\begin{enumerate}
+    \item \textbf{riservatezza}: il traffico viaggia cifrato;
+    \item \textbf{integrità dei dati}: se non venisse assicurata l'integrità dei dati, un soggetto terzo
+    potrebbe modificare il messaggio;
+    \item \textbf{autenticazione da parte del server}: L'autenticazione TLS è unilaterale, solo il server si 
+    autentica presso il client. Il mail client valida il certificato del server, controllando che la firma dei 
+    certificati del server sia valida e riconosciuta da una certificate authority.
+    In questo modo il mail client è sicuro dell'autenticità del mail server. 
+    %Per questo motivo Postfix ha bisogno di un certificato da mostrare ai mail client.
+\end{enumerate}
+
+

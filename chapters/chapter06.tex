@@ -85,18 +85,18 @@ Il compito principale è quello di assegnare a ciascun host che si connette alla
 che sarà diverso tutte le volte che l’host si connette alla rete. 
 È possibile configurare DHCP in modo che un dato host riceva un indirizzo IP persistente, 
 ovvero ogni volta che l’host entra nella rete gli venga assegnato sempre lo stesso indirizzo IP. 
-Procederemo per quest’ultima via, in modo che l’indirizzo IP dell’host che ospita il nostro server mail non cambi mai.
+Si procederà per quest’ultima via, in modo che l’indirizzo IP dell’host che ospita il mail server non cambi mai.
 
 Poiché il server deve essere raggiungibile dalle macchine della rete, 
-per comodità si è deciso di specificare un indirizzo IP prenotato per l’host della LAN che ospiterà il Mail Server. 
+per comodità si è deciso di specificare un indirizzo IP prenotato per l’host della LAN che ospiterà il mail server. 
 Specificando un IP riservato, tale host riceverà sempre lo stesso indirizzo IP privato ogni volta che accede al 
-server DHCP del router. In questo modo non sarà necessario modificare le impostazioni dei Mail Client, 
+server DHCP del router. In questo modo non sarà necessario modificare le impostazioni dei mail client, 
 installati sulle altre macchine, ogni volta che il server cambia IP.
 Per la prenotazione di un indirizzo IP, si dovrà accedere nella pagina di configurazione del router, 
 accessibile attraverso il browser, digitando l’indirizzo IP del router nella barra di ricerca 
 (in questo caso 192.168.8.1). Fatto ciò, si dovrà accedere alle impostazioni avanzate e cliccare sulla voce DHCP. 
 A questo punto sarà necessario inserire una riga di traduzione associando il MAC (indirizzo di livello 2), 
-del dispositivo interessato, all’indirizzo IP che vogliamo che ottenga ogni volta che ne richieda uno al server DHCP.
+del dispositivo interessato, all’indirizzo IP che si vuole che ottenga ogni volta che ne richieda uno al server DHCP.
 
 \begin{table}[htp]
     \centering
@@ -112,7 +112,7 @@ del dispositivo interessato, all’indirizzo IP che vogliamo che ottenga ogni vo
 
 \subsection{Generazione certificato per l'utilizzo del protocollo TLS/SSL}
 Per poter utilizzare il protocollo TLS/SSL sarà necessario generare un certificato.
-Attraverso il seguente comando saremo in grado di generare il certificato attraverso il comando:
+Si può generare il certificato attraverso il comando:
 
 \begin{verbatim}
     sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 
@@ -136,7 +136,7 @@ Attraverso il seguente comando saremo in grado di generare il certificato attrav
     \item \textit{-out}: questa opzione specifica dove andare a posizionare all’interno del file system il certificato che verrà creato.
 \end{itemize}
 
-A questo punto dovremo inserire una serie di informazioni, a scopo progettuale ho inserito soltanto:
+A questo punto dovremo inserire una serie di informazioni, a scopo progettuale sono stati compilati soltanto:
 
 \begin{verbatim}
     Country Name (2 letter code) [XX]:IT
@@ -211,7 +211,7 @@ necessarie per l'autenticazione presso il server Aruba:
     readme_directory = no
 \end{verbatim}
 5. Sempre all'interno del file \textit{/etc/postfix/main.cf} inserire i parametri per la configurazione di TLS,
-in questo momento saranno necessari i certificato e chiave generati precedentemente:
+in questo momento saranno necessari il certificato e la chiave precedentemente generati:
 
 \begin{verbatim}
     # TLS parameters
@@ -340,12 +340,12 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{figure}  
 
     In realtà in azienda ci sarà un server DNS con il compito di tradurre il dominio in indirizzo IP, 
-    e non sarebbe più necessario modificare il file \textit{/private/etc/hosts} per ogni macchina aziendale.
+    e non sarebbe più necessario modificare il file \textit{/private/etc/hosts} su ogni macchina aziendale.
 
 
     A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
     Dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
-    Sarà necessario istruire il nostro computer di fidarsi sempre del certificato
+    Sarà necessario istruire il nostro computer a fidarsi sempre del certificato
     (anche in questo caso in azienda non ci sarebbe bisogno di effettuare questo passaggio, poiché 
     il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
 
@@ -405,7 +405,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     In questo capitolo si provvederà allo sviluppo di una serie di filtri per fare in modo che Postfix possa 
     rilevare eventuali email da bloccare così da prevenire eventuali perdite di dati. 
     Saranno utilizzate le espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato è possibile 
-    decidere in che modo si vuole si comporti Postfix al verificarsi dell’evento, 
+    decidere in che modo si vuole che reagisca Postfix al verificarsi dell’evento, 
     ovvero quando rileva in un’ email un contenuto identificato sensibile, oppure quando riceve un’email da un 
     mittente inserito in una blacklist.
     I controlli hanno la seguente struttura: “se questo, allora quello”, 
@@ -420,11 +420,11 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{enumerate}
 
     \subsection{Analisi del contenuto}
-    Questi tipo di controlli si occuperanno del filtraggio del contenuto dell'email, 
+    Questo tipo di controlli si occuperà del filtraggio del contenuto dell'email, 
     andando a ispezionare oggetto, corpo del messaggio ed eventuali allegati. 
     
-    Saranno utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono metodi di 
-    pagamento (ad esempio Carte VISA), o permetterne l’invio eliminando il contenuto sensibile. 
+    Saranno utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono dati
+    finanziari (ad esempio Carte VISA), o permetterne l’invio eliminando il contenuto sensibile. 
     
     Importante ricordare che Postfix effettua il controllo riga per riga, quindi se viene identificato un 
     contenuto sensibile, e come azione di risposta si scegliesse IGNORE, 
@@ -489,7 +489,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     (nome.cognome@certimeter.it). 
 
     \subsubsection{Mettere in blacklist un mittente:}
-    Come impostazione di default postfix accetta le email che provengono da qualunque indirizzo di posta, 
+    Come impostazione di default Postfix accetta le email che provengono da qualunque indirizzo di posta, 
     tuttavia è possibile inserire un mittente in blacklist in modo che postfix rifiuti tutte le email che 
     provengono dal suo indirizzo di posta. Vi sono diverse possibilità per mettere un mittente in blacklist, 
     tuttavia tutte effettuano un controllo sull’header FROM: del messaggio.
@@ -501,7 +501,8 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \subsubsection{Blocco delle email indirizzate ad un certo dominio:}
     Si può supporre ad esempio che da policy aziendali sia vietato, per i dipendenti, 
-    inviare email al dominio reply.it In questo caso verrà inserito il seguente filtro:
+    inviare email al dominio reply.it.
+    In questo caso verrà inserito il seguente filtro:
 
     \begin{verbatim}
     /^To:.*@reply.it/
@@ -525,7 +526,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \section{Shell code}
     Nel suo sito ufficiale Postfix offre uno script bash di esempio che è possibile personalizzare per  
-    raggiungere l'obiettivo. Lo script avrà la funzione di mediatore tra Postfix e Python. 
+    permettere il dialogo tra il mail server Postfix e lo script(Python) sviluppato. Lo script avrà la funzione di mediatore tra Postfix e Python. 
     In ingresso gira la email, che Postfix consegna allo script wrapper.sh, allo script Python 
     il cui compito è quello di analizzarla.
     In base al valore di uscita dello script Python, wrapper.sh si comporterà in due modi:
@@ -534,7 +535,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \begin{enumerate}
         \item se sys.exit(0): ritorna la email a Postfix in modo che possa continuare il percorso;
         \item se sys.exit(1): il messaggio viene rifiutato poiché trovati dati sensibili. (Postfix invierà una 
-        email di ritorno al mittente spiegando che non ha potuto consegnare il messaggio). 
+        email di ritorno al mittente spiegando che non ha dovuto bloccare il messaggio). 
     \end{enumerate}
 
     \begin{verbatim}
@@ -586,7 +587,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 	    flags=Rq user=filter 
         argv=/home/filter/wrapper.sh -f ${sender} -- ${recipient}
     \end{verbatim}
-    In questo è stato registrato il filtro chiamato ``my\_filter''.
+    In questo modo è stato registrato il filtro chiamato ``my\_filter''.
     
     2. Adesso bisogna istruire Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
 
@@ -597,7 +598,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     #               (yes)   (yes)   (yes)   (never) (100)
     # =============================================================
     submission inet   n       -       n        -      -      smtpd
-            -o content_filter=my_filter:dummy  
+            -o content_filter=my_filter:  
     \end{verbatim}
     
     3. Infine sarà necessario riavviare postfix:
@@ -608,3 +609,271 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     
 
     \section{Test}
+    In questo paragrafo verranno effettuati una serie di test volti a collaudare la soluzione DLP 
+    implementata e a verificarne il corretto funzionamento.
+
+    \subsection{Test sull'analisi del contenuto}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 1 (TS01): \textbf{Messaggio contenente parola chiave da bloccare}}                                                              \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS01}                            \\ \hline
+    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio contenente parola chiave}                      \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene la parola chiave \\ TOP SECRET come oggetto del messaggio\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: Top secret\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ Test TS01\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il \\ mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha \\ ricevuto il seguente avviso:\\ \\ Il server ha bloccato il messaggio per\\ la possibile presenza di dati sensibili.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 2 (TS02): \textbf{Messaggio privo di dati sensibili}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS02} \\ \hline
+    \multicolumn{1}{|l|}{Nome} &
+      \multicolumn{1}{l|}{Messaggio privo di dati sensibili} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato non contiene nessun dato\\ sensibile\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: Benvenuto!\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ \\ Ciao Paolo,\\ Benvenuto nel Team <3\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}In questo caso Postfix si comporterà da normale\\ mail server di inoltro. Il messaggio verrà \\ inoltrato presso i mail server di Aruba.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Come da previsione il messaggio è stato\\ inoltrato correttamente. Il destinatario ha \\ ricevuto il seguente messaggio:\\ \\ Subject: Benvenuto!\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ Ciao Paolo,\\ Benvenuto nel Team <3\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 3 (TS03): \textbf{Messaggio contenente dati personali}}                                                                                   \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}          & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS03}                                            \\ \hline
+    \multicolumn{1}{|l|}{Nome}                                & \multicolumn{1}{l|}{Messaggio contenente dati personali}                                     \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}il messaggio inviato contiene un codice fiscale} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: Aggiornamento\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ Salve invio quanto richiesto,\\ Nominativo:\\ 	Paolo Fagioli\\ Codice fiscale:\\ 	TCMDPW34L46D127O\\ Buona giornata,\\ Paolo\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola IGNORE, il codice\\ fiscale sarà rimosso e la restante parte del\\ messaggio verrà ricevuta dal destinatario.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix si è comportato come previsto, eliminando\\ il codice fiscale dal messaggio. Il messaggio\\ ricevuto dal destinatario è il seguente:\\ \\ Salve invio quanto richiesto,\\ Nominativo:\\         Paolo Fagioli\\ Codice fiscale:\\ \\ Buona giornata,\\ Paolo\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito}       & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}SUPERATO}                                        \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 4 (TS04): \textbf{Messaggio contenente dati finanziari}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS04} \\ \hline
+    \multicolumn{1}{|l|}{Nome} &
+      \multicolumn{1}{l|}{Messaggio contenente dati finanziari} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene il numero di una\\ carta di pagamento VISA\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: pagamento\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ Ciao,\\ ti invio il numero della carta:\\ 4839-9268-2312-5203\\ Mi raccomando usala solo per urgenze.\\ Paolo\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il\\ mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha\\ ricevuto il seguente avviso:\\ \\ EMAIL BLOCCATA: \\ CARTA VISA RICONOSCIUTA\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+    \pagebreak
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 5 (TS05): \textbf{Messaggio contenente allegato sensibile}}                                                         \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS05}                            \\ \hline
+    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio contenente allegato sensibile}                 \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno troverà il contenuto sensibile e \\ bloccherà l'invio, e verrà inviata una email di \\ rimbalzo al mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Il risultato ottenuto conferma le aspettative.\\ Il mittente riceve la seguente email:\\ \\ Subject: Undelivered Mail Returned to Sender\\ From: Mail Delivery System <MAILER-DAEMON@mail.palfag.it>\\ To: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ \\ Message content rejected\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+    \begin{figure}[!b]
+        \centering
+        \includegraphics[width=8cm, height=10cm, keepaspectratio]{allegato_excel.png}
+        \caption{Allegato elenco\_dipendenti.csv}\label{allegatoExcel}
+      \end{figure}
+
+    
+
+    %\pagebreak
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 6 (TS06): \textbf{Messaggio contenente allegato innocuo}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS06} \\ \hline
+    \multicolumn{1}{|l|}{Nome} &
+      \multicolumn{1}{l|}{Messaggio contenente allegato innocuo} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato\\ un file word non contenente dati sensibili.\\ \\ allegato: poesia.doc\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno non troverà alcun contenuto sensibile e \\ restituirà l'email a Postfix tramite il comando sendmail.\\ L'email sarà inoltrata ai mail server di Aruba.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Il risultato ottenuto conferma le aspettative.\\ Il mittente ha ricevuto l'email originale contenente il file word.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+    \begin{figure}[htp]
+        \centering
+        \includegraphics[width=8cm, height=10cm, keepaspectratio]{allegato_word.png}
+        \caption{Allegato poesia.doc}\label{allegatoWord}
+      \end{figure}
+
+
+
+    \pagebreak
+    \subsection{Test sull'analisi del contesto}
+    
+
+
+\begin{table}[htp]
+    \vspace{4.5cm}
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 7 (TS07): \textbf{Messaggio indirizzato al dominio reply.it}}                                                       \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS07}                            \\ \hline
+    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio indirizzato al dominio reply.it}               \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio è stato inviato ad un \\ dominio bloccato secondo le policy.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test invio\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <p.fagioli@reply.it>\\ \\ prova\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il\\ mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha\\ ricevuto il seguente avviso:\\ \\ RECIPIENT DOMAIN BANNED\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 8 (TS08): \textbf{Messaggio inviato da mittente in blacklist}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS08} \\ \hline
+    \multicolumn{1}{|l|}{Nome} &
+      \multicolumn{1}{l|}{Messaggio inviato da mittente in blacklist} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio è stato inviato da un \\ mittente che si trova in blacklist.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: avviso\\ From: Francesco Lorusso <francesco.lorusso@certimeter.it>\\ To: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ \\ ciao Paolo,\\ ti avviso che domani non sarà possibile vederci.\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il\\ mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha\\ ricevuto il seguente avviso:\\ \\ SENDER ADDRESS REJECTED: BLACKLISTED\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+\begin{table}[htp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+    \multicolumn{2}{c}{test 9 (TS09): \textbf{Messaggio inviato da casella non aziendale}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS09} \\ \hline
+    \multicolumn{1}{|l|}{Nome} &
+      \multicolumn{1}{l|}{Messaggio inviato da casella non aziendale} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio è stato inviato da una \\ casella di posta non aziendale.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: avviso\\ From: Paolo Fagioli <palfag33@gmail.com>\\ To: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ \\ prova, \\ invio da casella non aziendale.\\ Paolo Fagioli\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il\\ mittente.\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{Risultato ottenuto} &
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha\\ ricevuto il seguente avviso:\\ \\ SENDER NON-CORPORATE DOMAIN REJECTED\end{tabular}} \\ \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} &
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
+    \end{tabular}%
+    }
+    \end{table}
+
+
+
