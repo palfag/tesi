@@ -1,9 +1,13 @@
-\chapter{Requsiti teorici}
+\chapter{DLP e posta elettronica}
+
+In questo capitolo si riportano gli aspetti teorici principali riguardanti la tematica della Data Loss Prevention
+e viene descritto il funzionamento della posta elettronica, in modo da comprendere al meglio i capitoli
+successivi.
 
 \section{Data Loss Prevention}
 Con il termine Data Loss Prevention si fa riferimento a 
 tecniche e sistemi in grado di identificare, monitorare 
-e proteggere dati sensibili con l’obiettivo di individuare 
+e proteggere dati riservati con l’obiettivo di individuare 
 e prevenire l’uso non autorizzato e la diffusione di informazioni riservate \cite{DLP1}. 
 
 Vi sono diversi tipi di minacce che possono portare ad una perdita di dati.
@@ -12,14 +16,14 @@ dipendente. È possibile, che a provocare una perdita di dati, sia un dipendente
 mosso dall'intenzione di danneggiare l'azienda o di rubare informazioni al suo datore di lavoro.
 Vi è anche la possibilità che un hacker, attraverso tecniche di ingegneria sociale, riesca a rubare
 le credenziali di un dipendente e ad intrufolarsi all'interno della rete aziendale, ovviamente con 
-l'obiettivo di appropriarsi di dati sensibili.
+l'obiettivo di appropriarsi di dati riservati.
 Queste sono alcune delle possibili vie che possono causare una perdita di dati. Poiché una perdita di dati
 può comportare sanzioni, conseguenze legali, ingenti perdite economiche, fino al compromettere la reputazione del 
 marchio e portare al fallimento dell'azienda, è necessaria l'implementazione di soluzioni
 DLP\footnote{\textit{DLP}: Data Loss Prevention}.
  
 
-\subsection{Cosa fa una soluzione DLP?}
+\subsection{Cosa fa una soluzione DLP}
     Una soluzione DLP monitora il traffico dei dati all'interno di un'azienda per accorgersi se
     questi circolano impropriamente. In caso di anomalie, vengono attivate delle azioni di risposta 
     in modo da bloccare il trasferimento dati non autorizzato e prevenire quindi la loro perdita/diffusione \cite{DLP2}.
@@ -27,9 +31,9 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 
 
 \subsection{Tipi di dati monitorati}
-    Sostenuto che il dato è di fondamentale importanza e che le soluzioni DLP si occupano di proteggere i dati sensibili,
-    ora, è opportuno spiegare cosa s'intende quando si parla di dati sensibili e che tipi di dati vengono monitorati 
-    da una soluzione DLP. I dati sensibili sono dati che hanno maggior valore per un'azienda e che possono comportare 
+    Sostenuto che il dato è di fondamentale importanza e che le soluzioni DLP si occupano di proteggere i dati riservati,
+    ora, è opportuno spiegare cosa s'intende quando si parla di dati riservati e che tipi di dati vengono monitorati 
+    da una soluzione DLP. I dati riservati sono dati che hanno maggior valore per un'azienda e che possono comportare 
     delle conseguenze se vengono persi o divulgati.
 
     In natura esistono due tipi dati: \textit{dati strutturati e non strutturati}.
@@ -37,7 +41,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             I dati strutturati sono dati che, come dice il nome, hanno una struttura, che presentano un pattern comune, e che 
             quindi possono essere facilmente individuati tramite le espressioni regolari. 
             Sono esempi di dati strutturati numeri delle carte di credito, codici fiscali, eccetera.
-            In natura il 20\% dei dati sono di tipo strutturato. 
+            Il 20\% dei dati sono di tipo strutturato. 
     
             \begin{center} 
                 \textit{Espressione regolare per carte di credito Visa Mastercard:}
@@ -69,7 +73,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
         A differenza dei dati a riposo, questi sono dati attivi, ovvero dati che stanno venendo
         visualizzati o manipolati da un'applicazione, dati con cui un utente sta interagendo. 
         Questi dati si differenziano dai dati a riposo perché, essendo al momento in utilizzo, 
-        si troveranno in qualche registro della CPU\footnote{\textit{CPU}: Computer Process Unit}, in qualche cache 
+        si troveranno in qualche registro della CPU, in qualche cache 
         o comunque in memoria principale. Sono più complessi da proteggere perché, dato che l'utente vi sta
         interagendo, si troveranno necessariamente in chiaro. Per la protezione di questi tipi di dati
         vengono usate tecniche che bloccano l'uso delle porte fisiche, il copia e incolla, gli screenshots, l'uso dei fax
@@ -82,10 +86,17 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
         Alcune tecniche di protezione base sono la cifratura dei dati
         e l'utilizzo di connessioni sicure (HTTPS, FTPS, TLS/SSL, SMTPS).
 
+  %      \begin{figure}[htp]
+    %         \vspace{0.5cm}
+    %        \centering
+     %       \fbox{\includegraphics[width=.8\textwidth, height=.6\textheight, keepaspectratio]{data loss vectors.jpeg}}
+      %      \caption{Modello ISACA: Data Loss Vectors}\label{ModelloIsaca}
+       %   \end{figure}
+%\pagebreak
 \subsection{Identificazione dei dati}
-    Vi sono diversi metodi per l'identificazione di dati sensibili, l'utilizzo di una tecnica piuttosto che
+    Vi sono diversi metodi per l'identificazione di dati riservati, l'utilizzo di una tecnica piuttosto che
     un'altra dipende se il dato è strutturato o meno. Di seguito 
-    una breve spiegazione su alcune delle tecniche per identificare dati sensibili: \cite{DLP4}
+    una breve spiegazione su alcune delle tecniche per identificare dati riservati: \cite{DLP4}
     \subsubsection{Pattern matching}
     Questa tecnica si basa sull'utilizzo delle espressioni regolari che hanno come scopo quello
     di identificare pattern prestabiliti. Come detto in precedenza è la tecnica maggiormente 
@@ -94,15 +105,15 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     \subsubsection{Dictionary lookup}
     La tecnica del dizionario si basa sull'utilizzo di un file di testo che ha come funzione quella
     di un vero e proprio dizionario. All'interno, il file viene riempito di parole chiave. 
-    Il dizionario verrà utilizzato come database di confronto per identificare dati sensibili all'interno 
+    Il dizionario viene utilizzato come database di confronto per identificare dati riservati all'interno 
     di documenti. Questo metodo è particolarmente adatto per dati non strutturati.
 
     \subsubsection{File fingerprinting}
     Anche questa tecnica è utilizzata per dati non strutturati come file, immagini, eccetera.
     Attraverso questa tecnica si può confrontare l'impronta di un file inviato via mail con 
-    le impronte di file sensibili precedentemente calcolate, salvate in database.
+    le impronte di file riservati precedentemente calcolate, salvate in database.
     Se ad esempio l'impronta del file in transito coincide con una di quelle del database,
-    allora il file è un file sensibile e si deve bloccare la sua diffusione.
+    allora il file è un file riservato e si deve bloccare la sua diffusione.
 
 \subsection{Network DLP vs Endpoint DLP}
     Nel mercato sono presenti diversi tipi di prodotti DLP, ognuno dei quali si concentra sulla protezione
@@ -114,7 +125,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             È inserito all'interno di una rete. Può comportare un minimo di overhead poiché tutto il traffico
             passa attraverso il dispositivo DLP per essere analizzato.
             Il network DLP monitora i dati che attraversano la rete e applica le politiche che sono in vigore
-            in quel momento. Quando ad esempio un utente prova ad inviare un file sensibile utilizzando la posta
+            in quel momento. Quando ad esempio un utente prova ad inviare un file riservato utilizzando la posta
             elettronica, il  dispositivo nDLP ispeziona il traffico e attraverso criteri predefiniti 
             può bloccare, mettere in quarantena o crittografare la email.
             Uno svantaggio di questo dispositivo è che se il device non si trova all'interno della rete aziendale,
@@ -125,12 +136,12 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             Consiste in un agent che va installato in ogni computer che si vuole monitorare. A differenza del precedente 
             però l'eDLP protegge sempre i dati, anche quando il computer non è all'interno della rete aziendale, ma ad esempio in un 
             aeroporto, utilizzando una rete pubblica. Un endpoint DLP permette di implementare le tecniche di sicurezza
-            citate precedentemente per la protezione dei dati in uso. un eDLP può ad esempio proteggere file sensibili 
+            citate precedentemente per la protezione dei dati in uso. un eDLP può ad esempio proteggere file riservati
             dall'essere copiati su pendrive o HDD esterni.
     
     \subsubsection*{}     
     Essendo prodotti con obiettivi diversi, è consigliato che le aziende utilizzino una soluzione che comprenda entrambi
-    in modo da essere protetta su più fronti \cite{DLP5}.
+    in modo da essere protette su più fronti \cite{DLP5}.
 
 
 \pagebreak
@@ -180,9 +191,9 @@ Un mail server svolge principalmente due funzioni:
 \end{enumerate}
 
 Il protocollo principale utilizzato per lo scambio di messaggi di posta elettronica è SMTP, 
-che verrà affrontato nel prossimo paragrafo.
-Un ottimo modo per comprendere il funzionamento della posta elettronica è attraverso un esempio.
-Supponiamo che Alice (alice@certimeter.it) voglia inviare un messaggio a Bob (bob@reply.it).
+che viene affrontato nel paragrafo successivo.
+Attraverso il seguente esempio verrà illustrato il funzionamento della posta elettronica.
+Supponiamo che Alice (alice@topolino.it) voglia inviare un messaggio a Bob (bob@paperino.it).
 
 Alice avrà composto il messaggio utilizzando ad esempio Outlook, e lo invierà al proprio mail server 
 sfruttando il protocollo SMTP. Una volta ricevuto il messaggio, il mail server di Alice si incaricherà di 
@@ -190,12 +201,14 @@ inoltrare quest'ultimo verso il server di posta di Bob (generalmente non sono ut
 ma le connessioni avvengono direttamente tra i server di posta finali). 
 Una volta ricevuta l'email, il server di posta di Bob la immagazzinerà nella sua casella di posta. 
 Successivamente quando Bob controllerà la sua mail, il messaggio di posta verrà scaricato dall'user agent 
-utilizzato da Bob, ipotizziamo Thunderbird, rendendolo disponibile alla sua vista\cite{kurose2008reti}.
+utilizzato da Bob, si ipotizzi Thunderbird, rendendolo disponibile alla sua vista.
+La figura \ref{architetturaPosta} riassume i vari componenti che partecipano al trasferimento del messaggio, dal
+mittente al destinatario, e i relativi protocolli utilizzati \cite{kurose2008reti}.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm, height=20cm, keepaspectratio]{architettura_posta.jpg}
-        \caption{Architettura della posta elettronica\cite{kurose2008reti}.}\label{architetturaPosta}
+        \caption{Architettura della posta elettronica.}\label{architetturaPosta}
   \end{figure}
 
 
@@ -212,19 +225,19 @@ trasferire i dati, ovvero da chi vuole inviare il messaggio. Dato che SMTP utili
 se Alice dovesse inviare a Bob più messaggi di posta, potrebbe inviarli sulla stessa connessione TCP e 
 infine chiuderla.
 Di seguito un esempio di comunicazione SMTP:
-
+\pagebreak
 \begin{verbatim}
     S: 220 smtp.reply.it ESMTP Postfix
-    C: HELO smtp.aruba.it
-    S: 250 smtp.reply.it
-    C: MAIL FROM: <alice@certimeter.it>
+    C: HELO smtp.topolino.it
+    S: 250 mail.paperino.it
+    C: MAIL FROM: <alice@topolino.it>
     S: 250 OK
-    C: RCPT TO: <bob@reply.it>
+    C: RCPT TO: <bob@paperino.it>
     S: 250 OK
     C: DATA
     S: 354 End data with <CR><LF>.<CR><LF>
-    C: From: "Alice" <alice@certimeter.it>
-    C: To: "Bob" <bob@reply.it>
+    C: From: "Alice" <alice@topolino.it>
+    C: To: "Bob" <bob@paperino.it>
     C: Date: Tue, 15 May 2021 16:02:43 -0500
     C: Subject: Messaggio di prova
     C: 

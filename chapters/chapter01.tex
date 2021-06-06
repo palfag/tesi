@@ -1,42 +1,52 @@
 \chapter{Introduzione}
 
-Nel settore aziendale si è rilevato, soprattutto nell’ultimo periodo causa pandemia da COVID-19, un aumento delle minacce e un incremento del pericolo di furto di identità o di informazioni rispettivamente a carico del singolo o delle aziende.
+Nell'ultimo anno si è rilevato un profondo cambiamento riguardante le abitudini della società.
+Il COVID-19 ha impattato il mondo costringendolo a modificarsi e con se ha stravolto anche il modo di lavorare. 
+Le restrizioni imposte dai governi hanno incoraggiato i dipendenti a lavorare da casa.
+L'aumento del lavoro a distanza ha portato con se un aumento degli attacchi informatici. 
+Durante il lockdown si è registrato che più di mezzo milione di persone in tutto il mondo sono state 
+vittima di violazioni in cui i loro dati sono stati rubati e venduti sul dark web.\cite{Intro}
 
-Poiché è necessario contrastare questo tipo di minacce, oltre a prevedere i classici sistemi di protezione perimetrale come i firewall, è assolutamente necessario prevedere sistemi che impediscano alle informazioni di uscire dai sistemi aziendali: i cosiddetti sistemi di Data Loss Prevention (DLP).
+Anche le aziende sono state vittima di numerosi attacchi. Nel settore aziendale è impensabile 
+non proteggersi dal punto di vista informatico, quindi, accanto alle protezioni perimetrali classiche 
+per impedire attacchi dall’esterno, costituite da Firewall, antivirus, antispam, anti-malware, 
+sistemi di prevenzione delle intrusioni (IPS) e sistemi di controllo degli accessi di rete (NAC) 
+è assolutamente necessario prevedere anche sistemi che impediscano alle informazioni di uscire 
+dai sistemi aziendali: i cosiddetti sistemi di Data Loss Prevention (DLP).
 
-Benché i firewall siano le difese perimetrali più conosciute, in grado di filtrare in base a indirizzi ip sorgente e destinazione, porte, e sul tipo di protocollo utilizzato, non sono in grado di identificare eventuali dati sensibili.
+Questa tesi documenta tutte le fasi progettuali, dalla rilevazione dei requisiti, alla progettazione, 
+l’implementazione, fino al collaudo e al Go Live di un sistema DLP in grado di identificare dati riservati, 
+contenuti all'interno delle email, così da prevenirne la perdita ed evitarne la diffusione.
 
-Questa tesi si concentra sullo sviluppo e l’implementazione, fino al collaudo e al Go Live di un sistema DLP in grado di identificare dati sensibili, all'interno delle email, così da prevenirne la perdita ed evitarne la diffusione.
+\section{Struttura della tesi}
 
-\section{Organizzazione}
-
-Il capitolo 1 fornirà una breve introduzione al lavoro di tirocinio, 
+Il capitolo 1 tratta una breve introduzione al lavoro di tirocinio, 
 spiegando perché è importante prevedere sistemi di Data Loss Prevention, 
-verrà anche fornita una panoramica della struttura di questa tesi.
+viene anche fornita una panoramica della struttura di questa tesi.
 
-Il capitolo 2 introdurrà gli aspetti teorici riguardo la tematica DLP e 
-un'introduzione generale sul funzionamento della posta elettronica, 
-in modo da comprendere al meglio i capitoli successivi.
+Il capitolo 2 fornisce le basi teoriche riguardo la tematica DLP e 
+della posta elettronica, in modo da poter comprendere al meglio i capitoli successivi.
 
-Nel capitolo 3 verrà effettuato un confronto tra i principali prodotti presenti sul mercato, 
-in modo da capire quali sono le caratteristiche fondamentali che contraddistinguono una soluzione DLP, 
-sempre nel capitolo 3 verrà effettuata una piccola introduzione sul progetto sviluppato e sulle tecnologie 
+Nel capitolo 3 viene effettuato un confronto tra i principali prodotti presenti sul mercato, 
+in modo da capire quali sono le caratteristiche fondamentali che contraddistinguono una soluzione DLP; 
+sempre nel capitolo 3 viene effettuata una piccola introduzione sul progetto sviluppato e sulle tecnologie 
 utilizzate per la sua implementazione.
 
 Il capitolo 4 affronta le fasi di analisi e disegno dell'architettura necessarie 
 per la successiva implementazione della soluzione.
 
-Il capitolo 5 è interamente incentrato su Postfix, ne descriverà il suo funzionamento, 
-la sua architettura e come sarà utilizzato per soddisfare i requisiti scoperti durante la fase di analisi.
+Il capitolo 5 è interamente incentrato su Postfix, viene descritto il suo funzionamento, 
+la sua architettura e come è stato utilizzato per soddisfare i requisiti scoperti durante la fase di analisi.
 
-Nel capitolo 6 verrà effettuata l'installazione e configurazione di Postfix in modo che si interfacci con
+Nel capitolo 6 viene viene descritta l'installazione e la configurazione di Postfix in modo che si interfacci con
 il mail client utilizzato in azienda Outlook e che svolga la funzione di mail server di inoltro verso il servizio
 di posta elettronica aziendale di Aruba.
 Per garantire la sicurezza, il traffico viaggerà utilizzando canali di comunicazione sicuri.
-Verrà inoltre effettuato lo sviluppo di alcuni filtri interni, per l'analisi del contenuto e del contesto,
-attraverso l'uso di parole chiave e di espressioni regolari.
-Sarà inoltre sviluppato uno script Python per l'analisi del contenuto degli allegati e successivamente verrà
-integrato in Postfix. Seguità una fase di test e il rilascio del progetto. 
+Viene inoltre descritto lo sviluppo di alcuni filtri interni, per l'analisi del contenuto e del contesto,
+attraverso l'uso di parole chiave e di espressioni regolari;
+sempre nel capitolo 6 è descritto lo sviluppo di uno script Python per effettuare l'analisi del contenuto 
+degli allegati 
+che successivamente è stato integrato in Postfix. Segue la descrizione della fase di test. 
 
 Infine un ultimo spazio è dedicato alle conclusioni e ai possibili sviluppi futuri.
 

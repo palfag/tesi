@@ -1,6 +1,11 @@
 \chapter{Individuazione tecnologica per il progetto}
 
-\section{Confronto vendors}
+In questo capitolo viene effettuato un confronto tra i principali prodotti presenti nel mercato,
+in modo da capire quali sono le caratteristiche fondamentali che contraddistinguono una soluzione DLP.
+Inoltre viene anche effettuata una piccola panoramica sulle tecnologie utilizzate per l'implementazione
+della soluzione.
+
+\section{Tecnologie DLP a confronto}
 Nel mercato sono presenti diversi tipi di soluzioni DLP. Ogni vendor propone il suo prodotto che fa 
 concorrenza agli altri. Attraverso un'analisi di mercato sarà più semplice capire quali sono le funzionalità
 fondamentali che contraddistinguono una soluzione DLP.
@@ -19,7 +24,7 @@ La seguente lista elenca alcuni dei principali prodotti presenti sul mercato:
     \item \textbf{Safetica} Data Loss Prevention
   \end{itemize}
 
-  Per lo studio di mercato verranno presi in causa i primi cinque della lista. 
+  Per lo studio di mercato sono stati presi in analisi i primi cinque della lista. 
   La tabella \ref{tabellaVendor} mostra similitudini e differenze delle caratteristiche possedute dai 
   principali prodotti DLP.
 
@@ -90,19 +95,19 @@ La seguente lista elenca alcuni dei principali prodotti presenti sul mercato:
 
     \begin{figure}
         \centering
-        \fbox{\includegraphics[width=.8\textwidth, height=.6\textheight, keepaspectratio]{data loss vectors.jpeg}}
-        \caption{Modello ISACA: Data Loss Vectors}\label{ModelloIsaca}
+        \fbox{\includegraphics[width=.7\textwidth, height=.6\textheight, keepaspectratio]{2017-gartner-magic-quadrant-for-enterprise-data-loss-prevention-new.png}}
+        \caption{Quadrante magico di Gartner}\label{Gartner}
       \end{figure}
 
 \section{Accenni sul progetto}
 Il progetto implementato consiste in una soluzione DLP per la protezione dei dati in transito, più precisamente per
-l'identificazione di eventuali contenuti sensibili presenti nelle email aziendali, in modo da prevenirne la perdita
+l'identificazione di eventuali dati riservati presenti nelle email aziendali, in modo da prevenirne la perdita
 ed evitarne la diffusione.
 
 Il confronto effettuato tra i prodotti principali presenti sul mercato, anche se nessuno di essi è stato utilizzato 
-ai fini del progetto, è stato utile per capire quali caratteristiche dovesse possedere la soluzione DLP implementata.
+ai fini del progetto, è risultato utile per capire quali caratteristiche dovesse possedere la soluzione DLP implementata.
 
-\section{Tecnologie utilizzate}
+\section{Tecnologie utilizzate per il progetto}
 Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     \subsection{Postfix}
     Postfix è un server di posta open source scritto in C da Wietse Zweitze Venema e distribuito con licenza IBM 
@@ -112,10 +117,9 @@ Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     soluzione DLP, non verranno dati ulteriori dettagli in questo paragrafo.
     
     \subsection{Python}
-    Python è un linguaggio di programmazione di più alto livello che si presta ad essere utilizzato in ambito didattico per la sua semplicità. È orientato a oggetti, adatto, tra gli altri usi, a sviluppare 
+    Python è un linguaggio di programmazione ad alto livello che si presta ad essere utilizzato in ambito didattico per la sua semplicità. È orientato a oggetti, adatto, tra gli altri usi, a sviluppare 
     degli script \cite{Python1}. A differenza di linguaggi come il C e Java è un linguaggio interpretato e non compilato. 
-    Il programma interprete di Python si occupa di tradurre le righe scritte in Python in istruzioni direttamente 
-    comprensibili al computer (linguaggio macchina). I programmi scritti in Python sono portabili, 
+    I programmi scritti in Python sono portabili, 
     cioè possono essere eseguiti su differenti sistemi operativi, tra i quali Windows, Mac OS X e GNU/Linux. 
     Inoltre è gratuito e open source, utilizzabile da chiunque \cite{boscaini2017imparare}.
 
@@ -130,7 +134,7 @@ Per l'implementazione del progetto sono state utilizzate diverse tecnologie:
     
     \subsection{Apache Tika}
     Apache tika è un tool per l’analisi dei contenuti, permette di estrarre il testo da migliaia di tipi di file diversi \cite{tika}.
-    Libreria utile per estrarre il testo dagli allegati delle email per verificare se contengono dati sensibili. 
+    Libreria utile per estrarre il testo dagli allegati delle email per verificare se contengono dati riservati. 
     %Ho utilizzato questa libreria all’interno del mio script Python per estrapolare il testo dai file allegati 
     %alle email in modo da verificare la presenza di dati sensibili.
     
