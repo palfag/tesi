@@ -63,15 +63,16 @@
   Questo è il demone incaricato di effettuare i controlli sul contenuto che come già detto sono documentati 
   nel capitolo 6. 
   Una volta che l’email supera i controlli, questa finisce nella coda dei messaggi in arrivo, passando 
-  sotto il controllo del gestore delle code (\textit{qmgr}). 
+  sotto il controllo del gestore delle code (\textit{qmgr}).
 
   In questo caso, poiché Postfix è stato configurato come relay mail server, 
   \textit{qmgr} contatterà il demone \textit{smtp} per inviare il messaggio al next-hop. In caso si dovesse consegnare 
-  il messaggio localmente verrebbe contattato \textit{local} e nel caso lo si passasse ad un comando \textit{pipe} \cite{Postfix2}.
+  il messaggio localmente verrebbe contattato \textit{local} e nel caso lo si dovesse passare ad un comando, 
+  verrebbe richiamato il demone \textit{pipe} \cite{Postfix2}.
   
   \subsection{Ricezione dei messaggi dalla rete}
   I messaggi ricevuti dalla rete sono accettati dal demone \textit{smtpd}. Una volta ricevuto il messaggio, 
-  \textit{smtpd} provvede a consegnarlo a \textit{cleanup} e da questo momento la strada percorsa 
+  \textit{smtpd} provvede a consegnarlo a \textit{cleanup} e da quel momento la strada percorsa 
   è la stessa di quella effettuata dalle email ricevute in locale.
   La configurazione effettuata per la soluzione DLP consiste in una variante di questa opzione.
   I messaggi ricevuti dalla rete, una volta controllati da \textit{cleanup}
@@ -79,13 +80,13 @@
   per essere consegnati allo script esterno ed esaminati.
   Se non vengono trovati dati riservati, viene utilizzato il comando \textit{sendmail} per riconsegnare 
   il messaggio a Postfix. 
-  Una volta fatto questo, Postfix vede il messaggio come ricevuto in locale, quindi, d'ora in avanti, inizia valere 
-  quanto detto nel paragrafo \ref{sec:ricezioneLocale}.
+  Una volta fatto questo, Postfix vede il messaggio come ricevuto in locale, quindi, da quel momento in poi, 
+  vale quanto detto nel paragrafo \ref{sec:ricezioneLocale}.
   
   \subsection{Rifiuto di un messaggio}
   Quando Postfix decide di rifiutare un messaggio, ad esempio perché vengono identificati dati riservati, 
-  il demone \textit{bounce} provvede ad avvisare il mittente, includendo opzionalmente una motivazione del perché non è 
-  stato possibile accettare e quindi consegnare il messaggio.
+  il demone \textit{bounce} provvede ad avvisare il mittente, includendo opzionalmente una motivazione del perché non
+  sia stato possibile accettare e quindi consegnare il messaggio.
   
   \section{Utilizzo di Postfix come soluzione DLP}
   In questo paragrafo vengono richiamati i requisiti descritti durante la fase di analisi e 
@@ -142,7 +143,7 @@
       
       \item{\textbf{HOLD [testo opzionale]: (Quarantena del messaggio)}}\\
       L'opzione HOLD mantiene il messaggio nella hold queue di Postfix in quarantena. Questa funzionalità
-      è utilizzata quando è necessario l'intervento umano. Il compito di decidere le sorti del messaggio,
+      è utilizzata quando è necessario l'intervento umano. Il compito di decidere le sorti del messaggio
       ricade sull'analista DLP, o postmaster se si vuole utilizzare la terminologia di Postfix. A questo punto
       il messaggio viene sbloccato, oppure eliminato.
       Nei log viene tracciata la riga che ha fatto match con la regola definita e se specificato viene incluso

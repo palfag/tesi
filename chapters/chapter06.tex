@@ -1,8 +1,11 @@
 \chapter{Implementazione e Test}
 
+Questo capitolo tratta la descrizione della fase di implementazione e test della soluzione.
+Ha l'obiettivo di documentare i passi effettuati per la costruzione della soluzione, e allo stesso tempo
+si pone come guida al lettore, in caso volesse seguire il procedimento per poter creare una soluzione DLP.
 \section{Predisposizione ambiente operativo}
 
-L'ambiente di lavoro sarà così configurato:
+L'ambiente di lavoro è così configurato:
 
 \begin{itemize}
     \item Host: Macbook pro con MacOS BigSur v 11.2.3;
@@ -13,13 +16,13 @@ L'ambiente di lavoro sarà così configurato:
 
 \subsection{Abilitare il port forwarding}
 Per fare in modo che le macchine della rete locale possano avviare una connessione
-verso il server (Postfix) si può utilizzare la modalità NAT di VirtualBox e creare dei 
+verso il server (Postfix) viene utilizzata la modalità NAT di VirtualBox così da creare dei 
 port-forwarding. È necessario dunque configurare la VM per l'utilizzo del NAT e aggiungere delle regole
 per la traduzione della porta.
 Le macchine si collegheranno all'indirizzo IP dell'Host utilizzando la porta Host Port configurata
 per il forwarding e le connessioni verranno inoltrate da VirtualBox al Guest.
-A scopi progettuali la VM gestirà un mail server configurato per l'ascolto sulle porte 25, 465 e
-587. Inoltre sono presenti anche altre due traduzioni per rendere raggiungibile un ipotetico web server e rendere possibile
+Per l'implementazione, la VM gestisce un mail server configurato per l'ascolto sulle porte 25, 465 e
+587. Inoltre sono presenti anche altre due traduzioni, come mostrato nella tabella \ref{tabNAT}, per rendere raggiungibile un ipotetico web server e rendere possibile
 la connessione SSH verso la macchina virtuale.
 
 % Please add the following required packages to your document preamble:
@@ -37,13 +40,13 @@ la connessione SSH verso la macchina virtuale.
     ssh        & TCP &  & 2222 &  & 22  \\ \hline
     \end{tabular}%
     }
+    \caption{Tabella di traduzione NAT di VirtualBox.}\label{tabNAT}
     \end{table}
-
+\pagebreak
 \subsection{Apertura porte del firewall}
 
 Il secondo passo consiste nell’aprire le porte del firewall, necessarie per il funzionamento del progetto, 
 in modo tale che le connessioni possano raggiungere il Guest. Questo è possibile attraverso i comandi:
-
 \begin{verbatim}
     firewall-cmd --zone=public --permanent --add-port 587/tcp
     firewall-cmd --zone=public --permanent --add-port 465/tcp
@@ -51,52 +54,53 @@ in modo tale che le connessioni possano raggiungere il Guest. Questo è possibil
     firewall-cmd --zone=public --permanent --add-port 80/tcp
     firewall-cmd --zone=public --permanent --add-port 22/tcp
 \end{verbatim}
-
-A questo punto sarà necessario effettuare un reload:
+A questo punto è necessario effettuare un reload:
 
 \begin{verbatim}
     firewall-cmd --reload
 \end{verbatim}
-
 Si può verificare che le porte siano state aperte correttamente attraverso il comando:
 \begin{verbatim}
-[root@localhost palfag]# firewall-cmd --list-all
-public (active)
-  target: default
-  icmp-block-inversion: no
-  interfaces: enp0s3
-  sources: 
-  services: cockpit dhcpv6-client ssh
-  ports: 80/tcp 465/tcp 25/tcp 587/tcp 22/tcp
-  protocols: 
-  masquerade: no
-  forward-ports: 
-  source-ports: 
-  icmp-blocks: 
-  rich rules: 
+    firewall-cmd --list-all
 \end{verbatim}
-
-La voce \textit{ports:} lista tutte le porte correntemente aperte.
-
+\begin{verbatim}
+    [root@localhost palfag]# firewall-cmd --list-all
+    public (active)
+      target: default
+      icmp-block-inversion: no
+      interfaces: enp0s3
+      sources: 
+      services: cockpit dhcpv6-client ssh
+      ports: 80/tcp 465/tcp 25/tcp 587/tcp 22/tcp
+      protocols: 
+      masquerade: no
+      forward-ports: 
+      source-ports: 
+      icmp-blocks: 
+      rich rules: 
+\end{verbatim}
+Nella voce \textit{ports:} sono listate tutte le porte correntemente aperte.
+\pagebreak
 \subsection{Prenotazione IP presso il server DHCP}
 Un server DHCP ha il compito di assegnare ad un dispositivo che si connette alla sua rete il primo indirizzo IP 
 valido disponibile. In generale ogni LAN possiede un server DHCP. 
 Il compito principale è quello di assegnare a ciascun host che si connette alla LAN un indirizzo IP temporaneo, 
 che sarà diverso tutte le volte che l’host si connette alla rete. 
-È possibile configurare DHCP in modo che un dato host riceva un indirizzo IP persistente, 
-ovvero ogni volta che l’host entra nella rete gli venga assegnato sempre lo stesso indirizzo IP. 
-Si procederà per quest’ultima via, in modo che l’indirizzo IP dell’host che ospita il mail server non cambi mai.
+%È possibile configurare DHCP in modo che un dato host riceva un indirizzo IP persistente, 
+%ovvero che ogni volta che l’host entra nella rete, gli venga assegnato sempre lo stesso indirizzo IP. 
+%Si procederà per quest’ultima via, in modo che l’indirizzo IP dell’host che ospita il mail server non cambi mai.
 
 Poiché il server deve essere raggiungibile dalle macchine della rete, 
-per comodità si è deciso di specificare un indirizzo IP prenotato per l’host della LAN che ospiterà il mail server. 
+per il progetto si è deciso di specificare un indirizzo IP prenotato per l’host della LAN che ospiterà il mail server. 
 Specificando un IP riservato, tale host riceverà sempre lo stesso indirizzo IP privato ogni volta che accede al 
 server DHCP del router. In questo modo non sarà necessario modificare le impostazioni dei mail client, 
 installati sulle altre macchine, ogni volta che il server cambia IP.
-Per la prenotazione di un indirizzo IP, si dovrà accedere nella pagina di configurazione del router, 
+Per la prenotazione di un indirizzo IP si dovrà accedere nella pagina di configurazione del router, 
 accessibile attraverso il browser, digitando l’indirizzo IP del router nella barra di ricerca 
 (in questo caso 192.168.8.1). Fatto ciò, si dovrà accedere alle impostazioni avanzate e cliccare sulla voce DHCP. 
-A questo punto sarà necessario inserire una riga di traduzione associando il MAC (indirizzo di livello 2), 
-del dispositivo interessato, all’indirizzo IP che si vuole che ottenga ogni volta che ne richieda uno al server DHCP.
+A questo punto sarà necessario inserire una riga di traduzione, come mostrato nella tabella \ref{reserveIPtable},
+associando il MAC (indirizzo di livello 2) del dispositivo interessato, all’indirizzo IP che si vuole che ottenga 
+ogni volta che ne richieda uno al server DHCP.
 
 \begin{table}[htp]
     \centering
@@ -105,13 +109,14 @@ del dispositivo interessato, all’indirizzo IP che si vuole che ottenga ogni vo
     \hline
     \rowcolor[HTML]{EFEFEF} 
     \textbf{N.} & \textbf{Indirizzo IP} & \textbf{Nome Dispositivo} & \textbf{MAC}      & \textbf{Opzioni}          \\ \hline
-    1           & 192.168.8.150         & Mac-di-Paolo              & 9A:0A:05:52:3F:07 & \multicolumn{1}{c|}{canc} \\ \hline
+    1           & 192.168.8.150         & Macbook-di-Paolo              & 9A:0A:05:52:3F:07 & \multicolumn{1}{c|}{canc} \\ \hline
     \end{tabular}%
     }
+    \caption{Tabella per l'assegnazione di un indirizzo IP riservato}\label{reserveIPtable}
     \end{table}
 
 \subsection{Generazione certificato per l'utilizzo del protocollo TLS/SSL}
-Per poter utilizzare il protocollo TLS/SSL sarà necessario generare un certificato.
+Per poter utilizzare il protocollo TLS/SSL è necessario generare un certificato\cite{certs}.
 Si può generare il certificato attraverso il comando:
 
 \begin{verbatim}
@@ -121,7 +126,7 @@ Si può generare il certificato attraverso il comando:
 \end{verbatim}
 
 \begin{itemize}
-    \item \textit{openssl}: questo è il comando che servirà a generare il certificato e la chiave;
+    \item \textit{openssl}: questo è il comando che serve per generare il certificato e la chiave;
     \item \textit{req -x509}: specifica che si desidera utilizzare la gestione della richiesta di firma del certificato 
     (CSR) X.509. X.509 è uno standard di infrastruttura a chiave pubblica a cui aderiscono SSL e TLS per la gestione 
     di chiavi e certificati;
@@ -135,14 +140,12 @@ Si può generare il certificato attraverso il comando:
     file system la chiave privata che verrà creata.
     \item \textit{-out}: questa opzione specifica dove andare a posizionare all’interno del file system il certificato che verrà creato.
 \end{itemize}
-
-A questo punto dovremo inserire una serie di informazioni, a scopo progettuale sono stati compilati soltanto:
+A questo punto è necessario inserire una serie di informazioni, a scopo progettuale sono stati compilati soltanto:
 
 \begin{verbatim}
     Country Name (2 letter code) [XX]:IT
     Common Name (your server's hostname) []: mail.palfag.it
 \end{verbatim}
-
 e verrà creato il seguente certificato:
 
 \begin{verbatim}
@@ -166,11 +169,9 @@ e verrà creato il seguente certificato:
     L43NSn6EzXghKY/KPViYkAjiBlpTNjkBhRrwfqYBJoyi4RyOgwu26HaX8EcTe9yv
     aQ==
     -----END CERTIFICATE-----
-
 \end{verbatim}
-
-È necessario Tenere a mente dove sono stati posizionati, all’interno del file system, 
-certificato e chiave poiché saranno necessari successivamente per la configurazione di Postfix.
+È necessario tenere a mente dove sono stati posizionati, all’interno del file system, 
+certificato e chiave privata poiché sono necessari, in una fase successiva, per la configurazione di Postfix.
 
 \section{Installazione e configurazione di Postfix}
 
@@ -179,8 +180,11 @@ certificato e chiave poiché saranno necessari successivamente per la configuraz
     \includegraphics[width=12cm, height=20cm, keepaspectratio]{Screenshot 2021-05-03 at 11.28.07.png}
     \caption{Configurazione di Postfix}\label{confPostfix}
   \end{figure}
-
-1. Innanzitutto sarà necessario installare i seguenti pacchetti:
+La figura \ref{confPostfix} mostra le varie componenti che prendono parte alla configurazione e le relative porte
+utilizzate per lo scambio dei messaggi di posta.
+\newline
+\newline
+1. Innanzitutto è necessario installare i seguenti pacchetti:
 
 \begin{verbatim}
     yum install postfix mailx cyrus-sasl cyrus-sasl-plain
@@ -211,7 +215,7 @@ necessarie per l'autenticazione presso il server Aruba:
     readme_directory = no
 \end{verbatim}
 5. Sempre all'interno del file \textit{/etc/postfix/main.cf} inserire i parametri per la configurazione di TLS,
-in questo momento saranno necessari il certificato e la chiave precedentemente generati:
+in questo momento sono necessari il certificato e la chiave precedentemente generati:
 
 \begin{verbatim}
     # TLS parameters
@@ -232,13 +236,13 @@ in questo momento saranno necessari il certificato e la chiave precedentemente g
 \begin{verbatim}
     systemctl start postfix.service
 \end{verbatim}
-7. A questo punto sarà possibile verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
+7. A questo punto è possibile verificare il corretto funzionamento della funzione di inoltro verso i server di Aruba 
 provando ad inviare una email da terminale:
 
 \begin{verbatim}
     echo corpo | mail -s “Oggetto” -r emailMittente emailDestinatario 
 \end{verbatim}
-8. Una volta testato il funzionamento, sarà necessario configurare Postfix in modo che ascolti dalle porte 465 e 587 
+8. Una volta testato il funzionamento, è necessario configurare Postfix in modo che ascolti dalle porte 465 e 587 
 (la porta 25 è già configurata di default).
 
 Editare il file \textit{/etc/postfix/master.cf}. Attraverso la seguente configurazione Postfix ascolterà 
@@ -303,7 +307,7 @@ A questo punto andare su ``File'' e fare click su ``Aggiungi account''.
 Nella finestra proposta inserire il proprio indirizzo di posta aziendale e selezionare ``Consenti la configurazione
 manuale dell'account'' e poi fare click su ``Connetti''.
 
-Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come mostrato nella tabella seguente:
+Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come mostrato nella tabella \ref{serverOUT}.
 
 
 \begin{table}[htp]
@@ -314,8 +318,8 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \textbf{Posta in arrivo} & imaps.aruba.it & 993  \\ \hline
     \textbf{Posta in uscita} & mail.palfag.it & 5555 \\ \hline
     \end{tabular}%
+    \caption{Configurazione server in entrata e in uscita}\label{serverOUT}
     \end{table}
-
     Si ricorda che la porta 5555 inserita è una porta effimera che successivamente verrà tradotta nella porta 587
     dal NAT di VirtualBox.
     Selezionare la spunta ``Usa SSL per connetterti'', a questo punto dovremmo trovarci nella stessa situazione
@@ -325,41 +329,40 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
             \centering
             \includegraphics[width=12cm, height=20cm, keepaspectratio]{confOutlook.png}
             \caption{Configurazione di Outlook}\label{confOutlook}
-        \end{figure}        
-    
-
+        \end{figure}   
+        
+        \begin{figure}[htp]
+          \centering
+          \includegraphics[width=12cm, height=20cm, keepaspectratio]{hosts.png}
+          \caption{Aggiunta record di traduzione DNS.}\label{hosts}
+      \end{figure}  
     Poiché il dominio mail.palfag.it non è registrato, 
     nessun server DNS sarebbe in grado di compiere la traduzione in 192.168.8.150, 
-    sarà dunque necessario inserire un record di traduzione manualmente all’interno del file \textit{/private/etc/hosts} 
+    è dunque necessario inserire un record di traduzione manualmente all’interno del file \textit{/private/etc/hosts} 
     come mostrato nella figura \ref{hosts}.
 
-    \begin{figure}[htp]
-        \centering
-        \includegraphics[width=12cm, height=20cm, keepaspectratio]{hosts.png}
-        \caption{Aggiunta record di traduzione DNS.}\label{hosts}
-    \end{figure}  
-
+    
     In realtà in azienda ci sarà un server DNS con il compito di tradurre il dominio in indirizzo IP, 
-    e non sarebbe più necessario modificare il file \textit{/private/etc/hosts} su ogni macchina aziendale.
+    e quindi, non sarebbe necessario modificare il file \textit{/private/etc/hosts} su ogni macchina aziendale.
 
 
     A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
     Dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
-    Sarà necessario istruire il nostro computer a fidarsi sempre del certificato
+    È necessario istruire il nostro computer a fidarsi sempre del certificato
     (anche in questo caso in azienda non ci sarebbe bisogno di effettuare questo passaggio, poiché 
     il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
 
-    Una volta fatto questo, sarà possibile inviare le email da Outlook.
+    Una volta fatto questo, risulta possibile inviare le email con Outlook.
 
 
     \section{Architettura finale}
-    Una volta effettuate tutte le configurazioni necessarie, sarà possibile migliorare il disegno dell’architettura. 
-    Questo disegno rappresenta una versione più realistica del modello reale, rispetto alla precedente versione.
+    Una volta effettuate tutte le configurazioni necessarie, è possibile migliorare il disegno dell’architettura. 
+    Il disegno risultante è mostrato in figura \ref{archFinal}.
 
     \begin{figure}[htp]
         \centering
         \includegraphics[width=12cm, height=20cm, keepaspectratio]{arch_final.png}
-        \caption{Aggiunta record di traduzione DNS.}\label{hosts}
+        \caption{Architettura finale.}\label{archFinal}
     \end{figure} 
 
     Tutti i Mail User Agent sono configurati in modo da avere come server SMTP di uscita mail.palfag.it, 
@@ -367,15 +370,15 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     quello di risolvere il dominio mail.palfag.it -> 192.168.8.150.
 
     All'invio di una email da parte di un dipendente, questa verrà indirizzata a Postfix (192.168.8.150) che la 
-    ispezionerà. Nel caso in cui dovesse bloccare l’invio della email per via del contenuto sensibile, 
-    Postfix provvederà ad avvisare il MUA (nel nostro caso Outlook) del suo rifiuto di consegnare il messaggio.
+    ispezionerà. Nel caso in cui dovesse bloccare l’invio della email per via del contenuto riservato, 
+    Postfix provvederà ad avvisare il mittente del suo rifiuto di consegnare il messaggio.
 
     Nel caso in cui il messaggio sia autorizzato ad essere inoltrato, Postfix attiverà la sua funzione di inoltro 
-    girandolo verso i server mail di Aruba. Fisicamente consegnerà il frame al suo default gateway.
+    girandolo verso i mail server di Aruba. Fisicamente consegnerà il frame al suo default gateway.
 
-    \pagebreak
+    %\pagebreak
     \section{Configurazione di controlli interni}
-    Per lo sviluppo di filtri sarà necessario come prima cosa, se non esistono già, creare i file:
+    Per lo sviluppo di filtri è necessario come prima cosa, se non esistono, creare i file:
 
     \begin{itemize}
         \item header\_checks
@@ -383,13 +386,13 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
         \item body\_checks
     \end{itemize}
 
-    All'interno del file header\_checks verranno sviluppati dei controlli per il filtraggio degli header
-    (From:, To:, Subject:, ecc\dots), body\_checks si occuperà di effettuare filtri sul corpo del messaggio e
-    infine mime\_header\_checks si occuperà degli allegati. È importante notare che il controllo degli allegati
-    nativo in Postfix permette soltanto di filtrare in base al nome del file e all'estensione. Successivamente 
-    verrà sviluppato un filtro esterno più completo per l'analisi del contenuto degli allegati.
+    All'interno del file header\_checks sono definiti dei controlli per il filtraggio degli header
+    (From:, To:, Subject:, ecc\dots), body\_checks definisce i controlli sul corpo del messaggio e
+    infine mime\_header\_checks sugli allegati. È importante notare che il controllo degli allegati
+    nativo di Postfix permette soltanto di filtrare in base al nome del file e all'estensione. 
+    Nei paragrafi successivi è definito un filtro esterno per l'analisi del contenuto degli allegati.
 
-    Una volta creati i file, sarà necessario aggiungere al file \textit{/etc/postfix/main.cf} le seguenti tre righe:
+    Una volta creati i file, è necessario aggiungere al file \textit{/etc/postfix/main.cf} le seguenti tre righe:
 
     \begin{verbatim}
         header_checks = regexp:/etc/postfix/header_checks
@@ -397,22 +400,22 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
         body_checks = regexp:/etc/postfix/body_checks
     \end{verbatim}
 
-    Postfix utilizzerà questi file per effettuare il filtraggio dei contenuti (es. corpo e oggetto) e anche del
+    Postfix utilizza questi file per effettuare il filtraggio dei contenuti (es. corpo e oggetto) e anche del
     contesto (es. mittente e destinatario). Sono definiti più file perché Postfix permette di utilizzare regole 
-    diverse per filtrare ad esempio oggetto e corpo del messaggio.
+    diverse per filtrare cose diverse, ad esempio oggetto e corpo del messaggio.
 
     \section{Sviluppo di filtri interni}
-    In questo capitolo si provvederà allo sviluppo di una serie di filtri per fare in modo che Postfix possa 
-    rilevare eventuali email da bloccare così da prevenire eventuali perdite di dati. 
-    Saranno utilizzate le espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato è possibile 
+    In questa sezione viene documentato lo sviluppo di una serie di filtri per fare in modo che Postfix possa 
+    rilevare eventuali email da bloccare così da prevenire eventuali fuoriuscite dal sistema aziendale di dati riservati. 
+    Vengono utilizzate le espressioni regolari per lo sviluppo dei filtri. Per ogni filtro sviluppato è possibile 
     decidere in che modo si vuole che reagisca Postfix al verificarsi dell’evento, 
-    ovvero quando rileva in un’ email un contenuto identificato sensibile, oppure quando riceve un’email da un 
+    ovvero quando rileva in un’email un contenuto identificato riservato, oppure quando riceve un’email da un 
     mittente inserito in una blacklist.
-    I controlli hanno la seguente struttura: “se questo, allora quello”, 
-    infatti nella prima parte verrà inserito il pattern del contenuto da rilevare e nella seconda verrà 
+    I controlli hanno la seguente struttura: “se si verifica questo, allora fai quello”, 
+    infatti nella prima parte viene inserito il pattern del contenuto da rilevare, mentre nella seconda viene 
     specificata l’azione di risposta da intraprendere.
 
-    Si divideranno i filtri da sviluppare in due macro-aree:
+    I filtri sviluppati si dividono in due macro-aree:
 
     \begin{enumerate}
         \item Analisi del contenuto;
@@ -420,18 +423,18 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{enumerate}
 
     \subsection{Analisi del contenuto}
-    Questo tipo di controlli si occuperà del filtraggio del contenuto dell'email, 
+    Questo tipo di controlli si occupa del filtraggio del contenuto dell'email, 
     andando a ispezionare oggetto, corpo del messaggio ed eventuali allegati. 
     
-    Saranno utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono dati
-    finanziari (ad esempio Carte VISA), o permetterne l’invio eliminando il contenuto sensibile. 
+    Sono utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono dati
+    finanziari (ad esempio Carte VISA), o per permetterne l’invio eliminando il contenuto riservato. 
     
     Importante ricordare che Postfix effettua il controllo riga per riga, quindi se viene identificato un 
-    contenuto sensibile, e come azione di risposta si scegliesse IGNORE, 
+    contenuto riservato, e come azione di risposta si scegliesse IGNORE, 
     l’intera riga sarà eliminata (questo potrebbe compromettere l’integrità/significato originale del messaggio). 
     
-    Saranno inseriti dei controlli sull’oggetto inserendo parole chiave che, se presenti, 
-    potranno portare al blocco dell’invio o alla quarantena del messaggio. Per gli allegati invece è possibile, nativamente,
+    Sono inseriti dei controlli sull’oggetto utilizzando parole chiave che, se presenti, 
+    porteranno al blocco dell’invio o alla quarantena del messaggio. Per gli allegati invece è possibile, nativamente,
     effettuare controlli esclusivamente sul filename o sull’estensione. 
 
     \subsubsection{Controlli sull'oggetto (file header\_checks):}
@@ -481,16 +484,16 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
 
     \subsection{Analisi del contesto}
-    In quest’area i controlli tratteranno il contesto e quindi andranno a focalizzarsi sulle restanti 
-    informazioni che compongono l’email. Saranno creati, ad esempio, controlli per filtrare in base al 
-    mittente del messaggio o del destinatario. 
-    Verrà bloccato l’invio delle email aziendali per un preciso dominio e si potrà decidere che Postfix 
-    non accetti email che provengono da un account di posta elettronica diverso da quello aziendale 
-    (nome.cognome@certimeter.it). 
+    I controlli che si occupano di analizzare il contesto vanno a esaminare le restanti 
+    informazioni che compongono l’email. Sono stati creati, ad esempio, controlli per filtrare in base al 
+    mittente del messaggio o del destinatario e controlli che bloccano i messaggi inviati verso uno specifico dominio.
+    % e si può scegliere che Postfix 
+    %non accetti email che provengono da un account di posta elettronica diverso da quello aziendale 
+    %(nome.cognome@certimeter.it). 
 
     \subsubsection{Mettere in blacklist un mittente:}
     Come impostazione di default Postfix accetta le email che provengono da qualunque indirizzo di posta, 
-    tuttavia è possibile inserire un mittente in blacklist in modo che postfix rifiuti tutte le email che 
+    tuttavia è possibile inserire un mittente in blacklist in modo che Postfix rifiuti tutte le email che 
     provengono dal suo indirizzo di posta. Vi sono diverse possibilità per mettere un mittente in blacklist, 
     tuttavia tutte effettuano un controllo sull’header FROM: del messaggio.
 
@@ -499,43 +502,43 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
         REJECT  SENDER ADDRESS REJECTED: BLACKLISTED
     \end{verbatim}
 
-    \subsubsection{Blocco delle email indirizzate ad un certo dominio:}
-    Si può supporre ad esempio che da policy aziendali sia vietato, per i dipendenti, 
-    inviare email al dominio reply.it.
-    In questo caso verrà inserito il seguente filtro:
+    \subsubsection{Blocco delle email indirizzate verso il dominio topolino.it:}
+    Si suppone che da policy aziendali sia vietato, per i dipendenti, 
+    inviare email al dominio topolino.it.
+    In questo caso viene inserito il seguente filtro:
 
     \begin{verbatim}
-    /^To:.*@reply.it/
+    /^To:.*@topolino.it/
         REJECT RECIPIENT DOMAIN BANNED
     \end{verbatim}
 
-    \subsubsection{Blocco delle email inviate da caselle di posta differenti da quelle aziendali:}
-    \begin{verbatim}
-    if /^From:/
-    !/(^From:.*@certimeter.it)/ 
-        REJECT SENDER NON-CORPORATE DOMAIN REJECTED
-    endif
-    \end{verbatim}
+    %\subsubsection{Blocco delle email inviate da caselle di posta differenti da quelle aziendali:}
+    %\begin{verbatim}
+    %if /^From:/
+    %!/(^From:.*@certimeter.it)/ 
+    %    REJECT SENDER NON-CORPORATE DOMAIN REJECTED
+    %endif
+    %\end{verbatim}
 
     \section{Script Python esterno per la gestione degli allegati}
     Il filtraggio dei contenuti di Postfix è abbastanza limitato, poiché non permette di analizzare il contenuto
     degli allegati. Postfix però prevede la possibilità di utilizzare dei plug-in esterni. Per questo motivo è stato
-    sviluppato uno script Python che permettesse l'analisi e l'identificazione di contenuti sensibili presenti 
+    sviluppato uno script Python che permettesse l'analisi e l'identificazione di contenuti riservati presenti 
     negli allegati.
 
 
     \section{Shell code}
-    Nel suo sito ufficiale Postfix offre uno script bash di esempio che è possibile personalizzare per  
-    permettere il dialogo tra il mail server Postfix e lo script(Python) sviluppato. Lo script avrà la funzione di mediatore tra Postfix e Python. 
-    In ingresso gira la email, che Postfix consegna allo script wrapper.sh, allo script Python 
-    il cui compito è quello di analizzarla.
-    In base al valore di uscita dello script Python, wrapper.sh si comporterà in due modi:
-
+    Nel suo sito ufficiale Postfix offre uno script bash di esempio \cite{Postfix3}, che è stato personalizzato per 
+    permettere il dialogo tra il mail server e lo script sviluppato in Python.
+    In ingresso lo script \textit{wrapper.sh} riceve il file .eml da Postfix, che gira allo script Python,  
+    il cui compito è quello di analizzare il contenuto degli allegati.
+    lo script \textit{wrapper.sh} avrà comportamenti differenti a seconda del valore restituito dallo script Python:
+    
     
     \begin{enumerate}
-        \item se sys.exit(0): ritorna la email a Postfix in modo che possa continuare il percorso;
-        \item se sys.exit(1): il messaggio viene rifiutato poiché trovati dati sensibili. (Postfix invierà una 
-        email di ritorno al mittente spiegando che non ha dovuto bloccare il messaggio). 
+        \item se sys.exit(0): ritorna l' email a Postfix in modo che possa continuare il percorso;
+        \item se sys.exit(1): il messaggio viene rifiutato poiché identificati dati riservati. 
+        (Postfix invia una email di ritorno al mittente spiegando perché ha dovuto bloccare il messaggio). 
     \end{enumerate}
 
     \begin{verbatim}
@@ -572,10 +575,11 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{verbatim}
 
     \section{Integrazione script esterno}
-    Per fare in modo che venga eseguito il filtro esterno, sarà necessario configurare Postfix in modo
+    Per fare in modo che venga eseguito il filtro esterno, è necessario configurare Postfix in modo
     che consegni l'email allo script.
-    
-    1. Prima di tutto sarà necessario aggiungere nel file \textit{/etc/postfix/master.cf} il filtro:
+    \newline
+    \newline
+    1. Prima di tutto si deve aggiungere al file \textit{/etc/postfix/master.cf} il filtro:
 
     \begin{verbatim}
     /etc/postfix/master.cf:
@@ -588,8 +592,9 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
         argv=/home/filter/wrapper.sh -f ${sender} -- ${recipient}
     \end{verbatim}
     In questo modo è stato registrato il filtro chiamato ``my\_filter''.
-    
-    2. Adesso bisogna istruire Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
+    \newline
+    \newline
+    2. Poi bisogna dire a Postfix di eseguire lo script quando riceve le email sulla porta 587 (submission):
 
     \begin{verbatim}
         /etc/postfix/master.cf:
@@ -600,16 +605,15 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     submission inet   n       -       n        -      -      smtpd
             -o content_filter=my_filter:  
     \end{verbatim}
-    
-    3. Infine sarà necessario riavviare postfix:
+    3. Infine si deve riavviare Postfix:
 
     \begin{verbatim}
     postfix reload 
     \end{verbatim}
     
-
+\pagebreak
     \section{Test}
-    In questo paragrafo verranno effettuati una serie di test volti a collaudare la soluzione DLP 
+    In questo paragrafo sono documentati i test effettuati volti a collaudare la soluzione DLP 
     implementata e a verificarne il corretto funzionamento.
 
     \subsection{Test sull'analisi del contenuto}
@@ -652,7 +656,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
       \multicolumn{1}{l|}{Messaggio privo di dati sensibili} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato non contiene alcun dato\\ sensibile\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato non contiene alcun dato\\ riservato\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: Benvenuto!\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ \\ Ciao Paolo,\\ Benvenuto nel Team <3\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
@@ -724,10 +728,10 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{ll}
-    \multicolumn{2}{c}{test 5 (TS05): \textbf{Messaggio contenente allegato sensibile}}                                                         \\ \hline
+    \multicolumn{2}{c}{test 5 (TS05): \textbf{Messaggio contenente allegato riservato}}                                                         \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS05}                            \\ \hline
-    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio contenente allegato sensibile}                 \\ \hline
+    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio contenente allegato riservato}                 \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato.\end{tabular}} \\ \hline
@@ -735,7 +739,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno troverà il contenuto sensibile e \\ bloccherà l'invio, e verrà inviata una email di \\ rimbalzo al mittente.\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno troverà il contenuto riservato e \\ bloccherà l'invio, e verrà inviata una email di \\ rimbalzo al mittente.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{Risultato ottenuto} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Il risultato ottenuto conferma le aspettative.\\ Il mittente riceve la seguente email:\\ \\ Subject: Undelivered Mail Returned to Sender\\ From: Mail Delivery System <MAILER-DAEMON@mail.palfag.it>\\ To: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ \\ Message content rejected\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
@@ -771,7 +775,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno non troverà alcun contenuto sensibile e \\ restituirà l'email a Postfix tramite il comando sendmail.\\ L'email sarà inoltrata ai mail server di Aruba.\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno non troverà alcun contenuto riservato e \\ restituirà l'email a Postfix tramite il comando sendmail.\\ L'email sarà inoltrata ai mail server di Aruba.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{Risultato ottenuto} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Il risultato ottenuto conferma le aspettative.\\ Il mittente ha ricevuto l'email originale contenente il file word.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
@@ -783,7 +787,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     \begin{figure}[htp]
         \centering
-        \includegraphics[width=8cm, height=10cm, keepaspectratio]{allegato_word.png}
+        \fbox{\includegraphics[width=8cm, height=10cm, keepaspectratio]{lorem.png}}
         \caption{Allegato poesia.doc}\label{allegatoWord}
       \end{figure}
 
@@ -799,15 +803,15 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{ll}
-    \multicolumn{2}{c}{test 7 (TS07): \textbf{Messaggio indirizzato al dominio reply.it}}                                                       \\ \hline
+    \multicolumn{2}{c}{test 7 (TS07): \textbf{Messaggio indirizzato al dominio topolino.it}}                                                       \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID}    & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS07}                            \\ \hline
-    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio indirizzato al dominio reply.it}               \\ \hline
+    \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio indirizzato al dominio topolino.it}               \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio è stato inviato ad un \\ dominio bloccato da policy.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
-      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test invio\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <p.fagioli@reply.it>\\ \\ prova\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test invio\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <p.fagioli@topolino.it>\\ \\ prova\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il\\ mittente.\end{tabular}} \\ \hline
