@@ -54,7 +54,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
             strutturati sono email, immagini, audio, video, file pdf, eccetera. 
     
     Le espressioni regolari non sono adatte per identificare questo tipo di dati. %(possono essere usate per l'estrazione di informazioni strutturate da dati testuali non strutturati), 
-    Per i dati non strutturati si usano tecniche differenti, più sofisticate, alcune delle quali saranno introdotte nel paragrafo successivo \cite{DLP3}.
+    Per i dati non strutturati si usano tecniche differenti, più sofisticate, alcune delle quali sono introdotte nel paragrafo successivo \cite{DLP3}.
 
     \subsubsection*{}
     I dati, durante la loro vita, possono trovarsi a riposo, in utilizzo o in transito.
@@ -64,7 +64,7 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
     \subsubsection{data-at-rest}
         I dati a riposo sono dati al momento inattivi, che sono immagazzinati fisicamente in database,
         o in file (ad esempio in file excel), oppure su dispositivi di storage come HDD o SSD, eccetera.
-        Se sono salvati in un computer, questi di dati si trovano in memoria secondaria.
+        Se sono salvati in un computer, questi dati si trovano in memoria secondaria.
         Le modalità di protezione di questi dati sono denominate DARP\footnote{\textit{DARP}: Data At Rest Protection}, 
         di cui fanno parte tecniche come la crittografia dei dati (prima di essere archiviati) oppure come la cifratura
         dell'intero dispositivo di storage, protezione con password, il controllo degli accessi, eccetera.
@@ -146,14 +146,14 @@ DLP\footnote{\textit{DLP}: Data Loss Prevention}.
 
 \pagebreak
 \section{Posta elettronica}
-La posta elettronica è uno dei servizi Internet più utilizzati in tutto il mondo\cite{posta}. Attraverso di essa
-È possibile scambiare messaggi attraverso la rete in modo facile, veloce e soprattutto gratuito. 
+La posta elettronica è uno dei servizi Internet più utilizzati in tutto il mondo \cite{posta}. Attraverso di essa
+è possibile scambiare messaggi attraverso la rete in modo facile, veloce e soprattutto gratuito. 
 I messaggi scambiati possono consistere in semplice testo (oggetto e corpo), 
 oppure includere anche uno o più allegati.
 
 \subsection{Formato dei messaggi di posta elettronica}
 Un messaggio di posta elettronica contiene una serie di righe di intestazione (header).
-Ogni intestazione è una coppia chiave:valore. Alcune parole chiave sono opzionali (Subject:), 
+Ogni intestazione è una coppia \textit{chiave: valore}. Alcune parole chiave sono opzionali (Subject:), 
 ma altre sono obbligatorie come From: e To:. Una riga vuota separa gli header dal corpo del messaggio.
 Di seguito un esempio di messaggio di posta:
 
@@ -200,7 +200,7 @@ sfruttando il protocollo SMTP. Una volta ricevuto il messaggio, il mail server d
 inoltrare quest'ultimo verso il server di posta di Bob (generalmente non sono utilizzati server di posta intermedi, 
 ma le connessioni avvengono direttamente tra i server di posta finali). 
 Una volta ricevuta l'email, il server di posta di Bob la immagazzinerà nella sua casella di posta. 
-Successivamente quando Bob controllerà la sua mail, il messaggio di posta verrà scaricato dall'user agent 
+Successivamente quando Bob controllerà la sua mail, il messaggio di posta verrà scaricato dallo user agent 
 utilizzato da Bob, si ipotizzi Thunderbird, rendendolo disponibile alla sua vista.
 La figura \ref{architetturaPosta} riassume i vari componenti che partecipano al trasferimento del messaggio, dal
 mittente al destinatario, e i relativi protocolli utilizzati \cite{kurose2008reti}.
@@ -227,7 +227,7 @@ infine chiuderla.
 Di seguito un esempio di comunicazione SMTP:
 \pagebreak
 \begin{verbatim}
-    S: 220 smtp.reply.it ESMTP Postfix
+    S: 220 smtp.paperino.it
     C: HELO smtp.topolino.it
     S: 250 mail.paperino.it
     C: MAIL FROM: <alice@topolino.it>
@@ -262,7 +262,7 @@ in questo caso il protocollo utilizzato per scaricare i messaggi di posta è HTT
 \subsection{Protocolli crittografici TLS/SSL}
 SSL (secure sockets layer) permette di rendere sicuro TCP,  fornendogli servizi di sicurezza, 
 comprese la riservatezza, l’integrità dei dati e l’autenticazione del server. 
-Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security).\cite{tls}
+Una versione particolare di SSL (SSLv3) è chiamata TLS (transport layer security) \cite{tls}.
 
 \begin{enumerate}
     \item \textbf{riservatezza}: il traffico viaggia cifrato;

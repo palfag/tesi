@@ -116,7 +116,7 @@ ogni volta che ne richieda uno al server DHCP.
     \end{table}
 
 \subsection{Generazione certificato per l'utilizzo del protocollo TLS/SSL}
-Per poter utilizzare il protocollo TLS/SSL è necessario generare un certificato\cite{certs}.
+Per poter utilizzare il protocollo TLS/SSL è necessario generare un certificato \cite{certs}.
 Si può generare il certificato attraverso il comando:
 
 \begin{verbatim}
@@ -275,7 +275,7 @@ sulla porta 587 e sarà dotato di tutte le impostazioni necessarie per supportar
     -o smtpd_sasl_security_options=noanonymous
     -o broken_sasl_auth_clients=yes
     -o smtpd_recipient_restrictions=permit_sasl_authenticated,reject
-    -o smtpd_tls_security_level=encryptà
+    -o smtpd_tls_security_level=encrypt
     -o smtpd_tls_wrappermode=yes
     -o smtpd_tls_key_file=/etc/pki/tls/private/apache-selfsigned.key
     -o smtpd_tls_cert_file=/etc/pki/tls/certs/apache-selfsigned.crt
@@ -355,14 +355,14 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     Una volta fatto questo, risulta possibile inviare le email con Outlook.
 
 
-    \section{Architettura finale}
+    \section{Architettura risultante}
     Una volta effettuate tutte le configurazioni necessarie, è possibile migliorare il disegno dell’architettura. 
     Il disegno risultante è mostrato in figura \ref{archFinal}.
 
     \begin{figure}[htp]
         \centering
         \includegraphics[width=12cm, height=20cm, keepaspectratio]{arch_final.png}
-        \caption{Architettura finale.}\label{archFinal}
+        \caption{Architettura risultante.}\label{archFinal}
     \end{figure} 
 
     Tutti i Mail User Agent sono configurati in modo da avere come server SMTP di uscita mail.palfag.it, 
@@ -445,13 +445,13 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \begin{verbatim}
     /^Subject:(.)*(URGENTE | TOP SECRET| … | SEGRETO)(.)*/
         REJECT Il server ha bloccato il messaggio per 
-        la possibile presenza di dati sensibili
+        la possibile presenza di dati riservati
     \end{verbatim}
     2. Quarantena dei messaggi che contengono la parola chiave PRIVATO:
     \begin{verbatim}
     /^Subject:(.)*PRIVATO(.)*/
         HOLD Il server ha messo in quarantena il messaggio per 
-        la possibile presenza di dati sensibili
+        la possibile presenza di dati riservati
     \end{verbatim}
     3. Blocco dei messaggi che hanno come oggetto una carta VISA:
     \begin{verbatim}
@@ -484,9 +484,9 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
 
     \subsection{Analisi del contesto}
-    I controlli che si occupano di analizzare il contesto vanno a esaminare le restanti 
+    I controlli che si occupano di analizzare il contesto vanno ad esaminare le restanti 
     informazioni che compongono l’email. Sono stati creati, ad esempio, controlli per filtrare in base al 
-    mittente del messaggio o del destinatario e controlli che bloccano i messaggi inviati verso uno specifico dominio.
+    mittente o al destinatario del messaggio e controlli che bloccano i messaggi inviati verso uno specifico dominio.
     % e si può scegliere che Postfix 
     %non accetti email che provengono da un account di posta elettronica diverso da quello aziendale 
     %(nome.cognome@certimeter.it). 
@@ -536,7 +536,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     
     
     \begin{enumerate}
-        \item se sys.exit(0): ritorna l' email a Postfix in modo che possa continuare il percorso;
+        \item se sys.exit(0): ritorna l'email a Postfix in modo che possa continuare il percorso;
         \item se sys.exit(1): il messaggio viene rifiutato poiché identificati dati riservati. 
         (Postfix invia una email di ritorno al mittente spiegando perché ha dovuto bloccare il messaggio). 
     \end{enumerate}
@@ -636,7 +636,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Verrà attivata la clausola REJECT, il messaggio\\ sarà rifiutato da Postfix e verrà avvisato il \\ mittente.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{Risultato ottenuto} &
-      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha \\ ricevuto il seguente avviso:\\ \\ Il server ha bloccato il messaggio per\\ la possibile presenza di dati sensibili.\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Postfix ha rifiutato il messaggio. Il mittente ha \\ ricevuto il seguente avviso:\\ \\ Il server ha bloccato il messaggio per\\ la possibile presenza di dati riservati.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Esito} & \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{333333} SUPERATO}} \\ \hline
     \end{tabular}%
@@ -648,12 +648,12 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{ll}
-    \multicolumn{2}{c}{test 2 (TS02): \textbf{Messaggio privo di dati sensibili}} \\ \hline
+    \multicolumn{2}{c}{test 2 (TS02): \textbf{Messaggio privo di dati riservati}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}ID} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}TS02} \\ \hline
     \multicolumn{1}{|l|}{Nome} &
-      \multicolumn{1}{l|}{Messaggio privo di dati sensibili} \\ \hline
+      \multicolumn{1}{l|}{Messaggio privo di dati riservati} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato non contiene alcun dato\\ riservato\end{tabular}} \\ \hline
@@ -734,12 +734,12 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \multicolumn{1}{|l|}{Nome}                          & \multicolumn{1}{l|}{Messaggio contenente allegato riservato}                 \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato.\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato \\ un file excel contenente dati riservati.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Risultato atteso} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno troverà il contenuto riservato e \\ bloccherà l'invio, e verrà inviata una email di \\ rimbalzo al mittente.\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Il filtro nativo di Postfix non troverà nulla, passerà\\ il messaggio al filtro esterno sviluppato in Python.\\ Il filtro esterno troverà il contenuto riservato e \\ bloccherà l'invio. Verrà inviata una email di \\ rimbalzo al mittente.\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{Risultato ottenuto} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Il risultato ottenuto conferma le aspettative.\\ Il mittente riceve la seguente email:\\ \\ Subject: Undelivered Mail Returned to Sender\\ From: Mail Delivery System <MAILER-DAEMON@mail.palfag.it>\\ To: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ \\ Message content rejected\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
@@ -770,7 +770,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
       \multicolumn{1}{l|}{Messaggio contenente allegato innocuo} \\ \hline
     \rowcolor[HTML]{EFEFEF} 
     \multicolumn{1}{|l|}{\cellcolor[HTML]{EFEFEF}Descrizione} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato\\ un file word non contenente dati sensibili.\\ \\ allegato: poesia.doc\end{tabular}} \\ \hline
+      \multicolumn{1}{l|}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}il messaggio inviato contiene come allegato\\ un file word non contenente dati riservati.\\ \\ allegato: poesia.doc\end{tabular}} \\ \hline
     \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Messaggio inviato\\ dal mittente\end{tabular}} &
       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Subject: test\\ From: Paolo Fagioli <paolo.fagioli@certimeter.it>\\ To: Paolo Fagioli <palfag33@gmail.com>\\ \\ test con allegato.\end{tabular}} \\ \hline
     \rowcolor[HTML]{EFEFEF} 

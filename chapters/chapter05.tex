@@ -9,7 +9,7 @@
   Questo capitolo è totalmente incentrato su Postfix, descrivendone il funzionamento, 
   l'architettura e come è stato utilizzato per soddisfare i requisiti scoperti durante la fase di analisi.
   
-  Come accennato nel capitolo precedente, la soluzione DLP è stata implementata attraverso l'utilizzo di un 
+  Come accennato nel capitolo 3, la soluzione DLP è stata implementata attraverso l'utilizzo di un 
   mail server configurato in modalità di inoltro.
   La scelta sul prodotto migliore da utilizzare è ricaduta tra Sendmail e Postfix. 
   Sendmail è stato l'MTA più diffuso tra i sistemi UNIX, ma ormai sono stati riscontrati problemi in materia
@@ -109,8 +109,8 @@
       \rowcolor[HTML]{EFEFEF} 
       \textbf{3. Analisi del contesto} &
         \begin{tabular}[c]{@{}l@{}}È possibile effettuare un'analisi degli\\ header del messaggio. Si possono\\ effettuare delle restrizioni in base al\\ mittente e destinatario o in base ad un \\ dominio.\\ \\ alcuni header d'interesse: \\ - FROM:\\ - TO:\end{tabular} \\ \hline
-      \textbf{\begin{tabular}[c]{@{}l@{}}4. Identificazione di contenuti\\     riservati\end{tabular}} &
-        \begin{tabular}[c]{@{}l@{}}L'identificazione di contenuti riservati\\ è possibile per mezzo dell'analisi del \\ contenuto.\end{tabular} \\ \hline
+      \textbf{\begin{tabular}[c]{@{}l@{}}4. Identificazione di dati     riservati\end{tabular}} &
+        \begin{tabular}[c]{@{}l@{}}L'identificazione di dati/contenuti riservati\\ è possibile per mezzo dell'analisi del \\ contenuto.\end{tabular} \\ \hline
       \rowcolor[HTML]{EFEFEF} 
       \textbf{5. Intraprendere azioni di risposta} &
         \begin{tabular}[c]{@{}l@{}}Azioni di risposta offerte da Postfix:\\ 1. REJECT;\\ 2. IGNORE;\\ 3. WARN;\\ 4. HOLD;\\ 5. DISCARD;\\ 6. FILTER;\\ 7. REDIRECT.\\ \\ Nel paragrafo successivo viene spiegato il \\ funzionamento di ogni voce citata.\end{tabular} \\ \hline
@@ -262,7 +262,7 @@
 [root@localhost palfag]# mailq
 -Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
 F128F8E9F44!    2471 Fri May 21 11:41:23  paolo.fagioli@certimeter.it
-                                         palfag33@gmail.com
+                                          palfag33@gmail.com
 
 -- 2 Kbytes in 1 Request.
 [root@localhost palfag]# postsuper -H 
