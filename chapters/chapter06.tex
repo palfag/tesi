@@ -83,7 +83,7 @@ Nella voce \textit{ports:} sono listate tutte le porte correntemente aperte.
 \pagebreak
 \subsection{Prenotazione IP presso il server DHCP}
 Un server DHCP ha il compito di assegnare ad un dispositivo che si connette alla sua rete il primo indirizzo IP 
-valido disponibile. In generale ogni LAN possiede un server DHCP. 
+valido disponibile \cite{DHCP1}. In generale ogni LAN possiede un server DHCP. 
 Il compito principale è quello di assegnare a ciascun host che si connette alla LAN un indirizzo IP temporaneo, 
 che sarà diverso tutte le volte che l’host si connette alla rete. 
 %È possibile configurare DHCP in modo che un dato host riceva un indirizzo IP persistente, 
@@ -348,9 +348,9 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     A questo punto è già possibile testare il funzionamento provando ad inviare una email attraverso Outlook. 
     Dovrebbe spuntare un avviso dicendo che il certificato è autofirmato e quindi non attendibile. 
-    È necessario istruire il nostro computer a fidarsi sempre del certificato
+    È necessario istruire il nostro computer a fidarsi del certificato
     (anche in questo caso in azienda non ci sarebbe bisogno di effettuare questo passaggio, poiché 
-    il certificato non sarebbe autofirmato, ma firmato da una certificate authority).
+    la firma del certificato sarebbe riconosciuta da una certificate authority).
 
     Una volta fatto questo, risulta possibile inviare le email con Outlook.
 
@@ -423,7 +423,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     \end{enumerate}
 
     \subsection{Analisi del contenuto}
-    Questo tipo di controlli si occupa del filtraggio del contenuto dell'email, 
+    Questo tipo di controlli si occupa del filtraggio dei contenuti dell'email, 
     andando a ispezionare oggetto, corpo del messaggio ed eventuali allegati. 
     
     Sono utilizzate le espressioni regolari per individuare e bloccare messaggi di posta che contengono dati
@@ -587,7 +587,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
     # service type  private unpriv  chroot  wakeup  maxproc command
     #               (yes)   (yes)   (yes)   (never) (100)
     # =============================================================
-    my_filter unix	  -	      n	      n	      -	      -	    pipe
+    my_filter unix	   -	       n	      n	      - 	     -	      pipe
 	    flags=Rq user=filter 
         argv=/home/filter/wrapper.sh -f ${sender} -- ${recipient}
     \end{verbatim}
