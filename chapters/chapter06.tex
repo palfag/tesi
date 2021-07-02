@@ -20,7 +20,7 @@ verso il server (Postfix) viene utilizzata la modalità NAT di VirtualBox così 
 port-forwarding. È necessario dunque configurare la VM per l'utilizzo del NAT e aggiungere delle regole
 per la traduzione della porta.
 Le macchine si collegheranno all'indirizzo IP dell'Host utilizzando la porta Host Port configurata
-per il forwarding e le connessioni verranno inoltrate da VirtualBox al Guest.
+per il forwarding e le connessioni verranno inoltrate da VirtualBox al Guest \cite{NAT}.
 Per l'implementazione, la VM gestisce un mail server configurato per l'ascolto sulle porte 25, 465 e
 587. Inoltre sono presenti anche altre due traduzioni, come mostrato nella tabella \ref{tabNAT}, per rendere raggiungibile un ipotetico web server e rendere possibile
 la connessione SSH verso la macchina virtuale.
@@ -402,7 +402,7 @@ Nella schermata successiva selezionare la voce ``IMAP'' e compilare i campi come
 
     Postfix utilizza questi file per effettuare il filtraggio dei contenuti (es. corpo e oggetto) e anche del
     contesto (es. mittente e destinatario). Sono definiti più file perché Postfix permette di utilizzare regole 
-    diverse per filtrare cose diverse, ad esempio oggetto e corpo del messaggio.
+    diverse per filtrare cose diverse, ad esempio oggetto e corpo del messaggio \cite{hildebrandt2005book}.
 
     \section{Sviluppo di filtri interni}
     In questa sezione viene documentato lo sviluppo di una serie di filtri per fare in modo che Postfix possa 
